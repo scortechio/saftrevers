@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Audit Testing from SAF-T</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Custom Styles -->
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: auto;
+            margin: 0;
+        }
+
+        .container {
+            text-align: center;
+            background-color: #ffffff;
+            padding: 40px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 12px;
+            width: 100%;
+        }
+
+        h1 {
+            margin-bottom: 30px;
+            font-size: 32px;
+            color: #4f2d7f;
+        }
+
+        .form-section {
+            background-color: #f9f9f9;
+            border: 1px solid #ccc;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .form-section h3 {
+            margin-bottom: 15px;
+            color: #6c4ea2;
+        }
+
+        .test-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 5px;
+            justify-content: space-between;
+        }
+
+        .test-item .checkbox-wrapper {
+            margin-right: 10px;
+        }
+
+        .test-item .btn {
+            flex: 1;
+            text-align: left;
+        }
+
+        .column {
+            display: flex;
+            flex-direction: column;
+            flex-wrap: wrap;
+            max-width: 50%;
+        }
+
+        .column:nth-child(2) {
+            margin-left: 20px;
+        }
+
+        .file-list {
+            text-align: left;
+            margin-top: 10px;
+        }
+
+        .custom-file-input {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            border: 0;
+        }
+
+        .custom-file-label {
+            display: inline-block;
+            padding: 8px 12px;
+            width: 100%;
+            cursor: pointer;
+            background-color: #4f2d7f;
+            color: #ffffff;
+            border-radius: 4px;
+            text-align: center;
+        }
+
+        .custom-file-label:hover {
+            background-color: #6c4ea2;
+        }
+
+        .run-tests-section {
+            text-align: center;
+        }
+
+        .run-tests-button {
+            padding: 10px 20px;
+            background-color: #4f2d7f;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s ease;
+        }
+
+        .run-tests-button:hover {
+            background-color: #6c4ea2;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Audit Testing from SAF-T</h1>
+        
+        <!-- Import SAF-T section -->
+        <div class="form-section" id="import-section">
+            <h3>Import SAF-T</h3>
+            <div class="form-group">
+                <label for="saf-t-files">Select Files:</label>
+                <div class="custom-file">
+                    <input type="file" class="custom-file-input" id="saf-t-files" multiple>
+                    <label class="custom-file-label" for="saf-t-files">Choose files</label>
+                </div>
+            </div>
+            <div class="file-list" id="file-list"></div>
+        </div>
+        
+        <!-- Company Details section -->
+        <div class="form-section" id="details-section">
+            <h3>Company Details</h3>
+            <div class="form-group">
+                <label for="company-name">Company name:</label>
+                <input type="text" class="form-control" id="company-name" placeholder="Enter company name">
+            </div>
+            <div class="form-group">
+                <label for="pm">PM (input text number):</label>
+                <input type="number" class="form-control" id="pm" placeholder="Enter PM" min="0">
+            </div>
+            <div class="form-group">
+                <label for="ampt">AMPT (input text number):</label>
+                <input type="number" class="form-control" id="ampt" placeholder="Enter AMPT" min="0">
+            </div>
+        </div>
+        
+        <!-- Tests section -->
+        <div class="form-section" id="tests-section">
+            <h3>Tests</h3>
+            
+            <div class="test-item">
+                <div class="column">
+                    <div class="test-item">
+                        <div class="checkbox-wrapper">
+                            <input type="checkbox" id="test1">
+                            <button type="button" class="btn btn-secondary" data-toggle="tooltip" data-placement="left" title="General Ledger">
+                                General Ledger
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="test-item">
+                        <div class="checkbox-wrapper">
+                            <input type="checkbox" id="test2">
+                            <button type="button" class="btn btn-secondary" data-toggle="tooltip" data-placement="left" title="Equity Movement">
+                                Equity Movement
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="test-item">
+                        <div class="checkbox-wrapper">
+                            <input type="checkbox" id="test3">
+                            <button type="button" class="btn btn-secondary" data-toggle="tooltip" data-placement="left" title="Non-Current Assets">
+                                Non-Current Assets
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="test-item">
+                        <div class="checkbox-wrapper">
+                            <input type="checkbox" id="test4">
+                            <button type="button" class="btn btn-secondary" data-toggle="tooltip" data-placement="left" title="Inventories">
+                                Inventories
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="test-item">
+                        <div class="checkbox-wrapper">
+                            <input type="checkbox" id="test5">
+                            <button type="button" class="btn btn-secondary" data-toggle="tooltip" data-placement="left" title="Trade receivables" data-toggle="modal" data-target="#tradeReceivablesModal">
+                                Trade receivables
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="test-item">
+                        <div class="checkbox-wrapper">
+                            <input type="checkbox" id="test6">
+                            <button type="button" class="btn btn-secondary" data-toggle="tooltip" data-placement="left" title="Trade payables">
+                                Trade payables
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="test-item">
+                        <div class="checkbox-wrapper">
+                            <input type="checkbox" id="test7">
+                            <button type="button" class="btn btn-secondary" data-toggle="tooltip" data-placement="left" title="Cash mvm reconciliation">
+                                Cash mvm reconciliation
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="column">
+                    <div class="test-item">
+                        <div class="checkbox-wrapper">
+                            <input type="checkbox" id="test8">
+                            <button type="button" class="btn btn-secondary" data-toggle="tooltip" data-placement="left" title="Payroll Test">
+                                Payroll Test
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="test-item">
+                        <div class="checkbox-wrapper">
+                            <input type="checkbox" id="test9">
+                            <button type="button" class="btn btn-secondary" data-toggle="tooltip" data-placement="left" title="COS Analysis">
+                                COS Analysis
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="test-item">
+                        <div class="checkbox-wrapper">
+                            <input type="checkbox" id="test10">
+                            <button type="button" class="btn btn-secondary" data-toggle="tooltip" data-placement="left" title="Operation expenses monthly Trend">
+                                Operation expenses monthly Trend
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="test-item">
+                        <div class="checkbox-wrapper">
+                            <input type="checkbox" id="test11">
+                            <button type="button" class="btn btn-secondary" data-toggle="tooltip" data-placement="left" title="Sales Analysis">
+                                Sales Analysis
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <button type="button" class="btn btn-secondary" data-toggle="modal" data-target="#journalEntriesModal"
+                    data-toggle="tooltip" data-placement="left" title="Journal Entries Analysis">
+                    Journal Entries Analysis
+                </button>
+                    
+                    <div class="test-item">
+                        <div class="checkbox-wrapper">
+                            <input type="checkbox" id="test13">
+                            <button type="button" class="btn btn-secondary" data-toggle="tooltip" data-placement="left" title="Financial Statement draft">
+                                Financial Statement draft
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="test-item">
+                        <div class="checkbox-wrapper">
+                            <input type="checkbox" id="test14">
+                            <button type="button" class="btn btn-secondary" data-toggle="tooltip" data-placement="left" title="VAT reconciliation">
+                                VAT reconciliation
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Run selected tests section -->
+        <div class="form-section run-tests-section">
+            <h3>Run selected tests</h3>
+            <button type="button" class="run-tests-button btn btn-primary" onclick="runSelectedTests()">
+                Generate selected audit test
+            </button>
+        </div>
+    </div>
+
+    <!-- Modal for Journal Entries Analysis -->
+    <div class="modal fade" id="journalEntriesModal" tabindex="-1" role="dialog" aria-labelledby="journalEntriesModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="journalEntriesModalLabel">Journal Entries Analysis Details</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="journal-analysis-notes">Notes:</label>
+                        <textarea class="form-control" id="journal-analysis-notes" rows="4" placeholder="Enter notes about the analysis"></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" onclick="saveJournalAnalysis()">Save Changes</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Modal for Trade receivables -->
+    <div class="modal fade" id="tradeReceivablesModal" tabindex="-1" role="dialog" aria-labelledby="tradeReceivablesModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="tradeReceivablesModalLabel">Trade Receivables</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <!-- Modal content for Trade receivables -->
+                    Content for Trade Receivables goes here.
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary">Save changes</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- jQuery and Bootstrap JS -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Script for tooltips and file input -->
+    <script>
+        $(document).ready(function() {
+            $('[data-toggle="tooltip"]').tooltip();
+            
+            $('#saf-t-files').on('change', function(event) {
+                var fileList = $('#file-list');
+                fileList.empty();
+                for (var i = 0; i < event.target.files.length; i++) {
+                    var file = event.target.files[i];
+                    var listItem = $('<div></div>').text(file.name);
+                    fileList.append(listItem);
+                }
+
+                // Update the label of the custom file input
+                var fileLabel = $('.custom-file-label');
+                fileLabel.text(event.target.files.length + ' file(s) selected');
+            });
+        });
+
+        function runSelectedTests() {
+            // Implement your logic to run selected tests here
+            var selectedTests = [];
+            $('.test-item input[type="checkbox"]').each(function() {
+                if ($(this).is(':checked')) {
+                    selectedTests.push($(this).next('button').text().trim());
+                }
+            });
+
+            if (selectedTests.length > 0) {
+                alert('Running selected tests: ' + selectedTests.join(', '));
+                // Implement further logic to execute the selected tests
+            } else {
+                alert('No tests selected.');
+            }
+        }
+
+        function saveJournalAnalysis() {
+    var notes = $('#journal-analysis-notes').val();
+    // You can process 'notes' here as needed (e.g., save to backend, display somewhere, etc.)
+    console.log('Notes entered:', notes);
+
+    // Close the modal programmatically
+    $('#journalEntriesModal').modal('hide');
+}
+    </script>
+</body>
+</html>
