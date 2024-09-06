@@ -264,7 +264,7 @@ input[type="checkbox"].test-checkbox:checked::after {
 <body>
     
     <div class="container">
-        <form id="runTestsForm" action="/run-tests" method="post">
+        <form id="runTestsForm" action="/run-tests" method="POST" enctype="multipart/form-data">
         <h1>Audit Testing from SAF-T</h1>
 
         <!-- Import SAF-T section -->
@@ -288,12 +288,16 @@ input[type="checkbox"].test-checkbox:checked::after {
                 <input type="text" class="form-control" id="company-name" placeholder="Enter company name">
             </div>
             <div class="form-group">
-                <label for="pm">PM (input text number):</label>
-                <input type="number" class="form-control" id="pm" placeholder="Enter PM" min="0">
+                <label for="financialstatementmat">Financial Statements Materiality Level:</label>
+                <input type="number" class="form-control" id="financialstatementmat" placeholder="Enter Financial Statements Materiality Level" min="0">
             </div>
             <div class="form-group">
-                <label for="ampt">AMPT (input text number):</label>
-                <input type="number" class="form-control" id="ampt" placeholder="Enter AMPT" min="0">
+                <label for="accmaterlevel">Account Materiality Level</label>
+                <input type="number" class="form-control" id="accmaterlevel" placeholder="Enter Account Materiality Level" min="0">
+            </div>
+            <div class="form-group">
+                <label for="transmatlevel">Transaction Materiality Level</label>
+                <input type="number" class="form-control" id="transmatlevel" placeholder="Enter Transaction Materiality Level" min="0">
             </div>
         </div>
 
@@ -348,10 +352,10 @@ input[type="checkbox"].test-checkbox:checked::after {
                     <div class="test-item">
                         <div class="checkbox-wrapper">
                             <input type="checkbox" class="test-checkbox" id="test5">
-                            <button type="button" style="background-color: rgb(62, 113, 130);float:center;border-color: rgb(21, 76, 66);" class="btn btn-secondary" data-toggle="modal" data-target="#tradeReceivablesModal" data-placement="left" title="Trade receivables">
+                            <button type="button" class="btn btn-secondary" data-toggle="modal" data-target="#tradeReceivablesModal" data-placement="left" title="Trade receivables">
                                 Trade receivables
                             </button>
-                            <span class="text-warning ml-2 small">**</span>
+                            <!-- <span class="text-warning ml-2 small">**</span> -->
                         </div>
                     </div>
                    
@@ -405,7 +409,7 @@ input[type="checkbox"].test-checkbox:checked::after {
                     <div class="test-item">
                         <div class="checkbox-wrapper">
                             <input type="checkbox" class="test-checkbox" id="test11">
-                            <button type="button" class="btn btn-secondary" data-toggle="tooltip" data-placement="left" title="Sales Analysis">
+                            <button type="button" class="btn btn-secondary"  data-placement="left" title="Sales Analysis" data-toggle="modal" data-target="#salesAnalysisModal"  data-toggle="tooltip">
                                 Sales Analysis
                             </button>
                         </div>
@@ -415,11 +419,11 @@ input[type="checkbox"].test-checkbox:checked::after {
                         
                         <div class="checkbox-wrapper">
                             <input type="checkbox" class="test-checkbox" id="test12">
-                            <button type="button" style="background-color: rgb(62, 113, 130);border-color: rgb(21, 76, 66);" class="btn btn-secondary" data-toggle="modal" data-target="#journalEntriesModal"
+                            <button type="button"  class="btn btn-secondary" data-toggle="modal" data-target="#journalEntriesModal"
     data-toggle="tooltip" data-placement="left" title="Journal Entries Analysis">
     Journal Entries Analysis
 </button>
-<span class="text-warning ml-2 small">**</span>
+<!-- <span class="text-warning ml-2 small">**</span> -->
 
                         </div>
                     </div>
@@ -448,7 +452,7 @@ input[type="checkbox"].test-checkbox:checked::after {
                 <input type="checkbox" id="testsSelectAll">
                 <label for="testsSelectAll">Select All</label>
             </div>
-            <span class="text-warning ml-2 small">** Click to add more tests</span>
+            <!-- <span class="text-warning ml-2 small">** Click to add more tests</span> -->
         </div>
         
         <!-- Run selected tests section -->
@@ -611,7 +615,54 @@ input[type="checkbox"].test-checkbox:checked::after {
             </div>
         </div>
     </div>
-
+    <div class="modal fade" id="salesAnalysisModal" tabindex="-1" role="dialog" aria-labelledby="salesAnalysisModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="salesAnalysisModalLabel">Sales Analysis</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <!-- Checkboxes -->
+                    <div class="form-group">
+                        <div class="custom-control custom-checkbox">
+                            <input type="checkbox" class="custom-control-input" id="checkboxSelectAllSales">
+                            <label class="custom-control-label" for="checkboxSelectAllSales">Select All</label>
+                        </div>
+                    </div>
+    
+                    <div class="form-group">
+                        <div class="custom-control custom-checkbox">
+                            <input type="checkbox" class="custom-control-input" id="checkboxSalesByClient">
+                            <label class="custom-control-label" for="checkboxSalesByClient">Sales by Client and by month - CY vs PY</label>
+                        </div>
+                        <div class="custom-control custom-checkbox">
+                            <input type="checkbox" class="custom-control-input" id="checkboxSalesByProduct">
+                            <label class="custom-control-label" for="checkboxSalesByProduct">Sales by Product and by month - CY vs PY</label>
+                        </div>
+                        <div class="custom-control custom-checkbox">
+                            <input type="checkbox" class="custom-control-input" id="checkboxSalesByClientProduct">
+                            <label class="custom-control-label" for="checkboxSalesByClientProduct">Sales by Client and Product - CY vs PY</label>
+                        </div>
+                        <div class="custom-control custom-checkbox">
+                            <input type="checkbox" class="custom-control-input" id="checkboxSalesVsCOSProduct">
+                            <label class="custom-control-label" for="checkboxSalesVsCOSProduct">Sales vs COS / Margin by product - CY vs PY (poate sa fie si pe month)</label>
+                        </div>
+                        <div class="custom-control custom-checkbox">
+                            <input type="checkbox" class="custom-control-input" id="checkboxSalesVsCOSClient">
+                            <label class="custom-control-label" for="checkboxSalesVsCOSClient">Sales vs COS / Margin by client - CY vs PY (poate sa fie si pe month)</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" onclick="saveSalesAnalysis()">Save changes</button>
+                </div>
+            </div>
+        </div>
+    </div>
     <!-- Modal pentru afișarea mesajului și listei de teste -->
 <div class="modal fade" id="runningTestsModal" tabindex="-1" role="dialog" aria-labelledby="runningTestsModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
@@ -690,7 +741,15 @@ input[type="checkbox"].test-checkbox:checked::after {
         if ($(this).is(':checked')) {
             selectedTests.push($(this).next('label').text().trim());
         }
+    
     });
+    $('#salesAnalysisModal .custom-control-input').not('#checkboxSelectAllSales').each(function() {
+        if ($(this).is(':checked')) {
+            selectedTests.push($(this).next('label').text().trim());
+        }
+    
+    });
+    
 
     if (selectedTests.length > 0) {
             var message = 'Running selected tests: ' + selectedTests.join(', ');
@@ -739,6 +798,34 @@ $(document).ready(function() {
         checkboxes.prop('checked', $(this).prop('checked'));
     });
 });
+
+
+$(document).ready(function() {
+    // // Select All functionality for Journal Entries
+    // $('#checkboxSelectAll').click(function() {
+    //     var checkboxes = $('.custom-control-input').not(this);
+    //     checkboxes.prop('checked', $(this).prop('checked'));
+    // });
+
+    // Select All functionality for Trade Receivables
+    $('#checkboxSelectAllSales').click(function() {
+        var checkboxes = $('#salesAnalysisModal .custom-control-input').not(this);
+        checkboxes.prop('checked', $(this).prop('checked'));
+    });
+});
+
+function saveSalesAnalysis() {
+    // Implement save logic here
+
+    // Automatically check the checkbox for this modal after saving
+    $('#test11').prop('checked', true);
+    
+    // Close the modal
+    $('#salesAnalysisModal').modal('hide');
+}
+
+
+
 function saveTradeReceivables() {
     // Implement save logic here
 
