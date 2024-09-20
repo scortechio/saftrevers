@@ -5,8 +5,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SAF-T Reports Check & Review</title>
+     <!-- <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet"> -->
     <!-- Bootstrap CSS -->
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <!-- Custom Styles -->
     <style>
         body {
@@ -191,6 +193,9 @@
         .modal-footer {
             border-top: none;
         }
+        .modal {
+    z-index: 1050; /* Verifică că este suficient de mare */
+}
 
         /* Tooltip styling */
         .btn[data-toggle="tooltip"] {
@@ -257,11 +262,95 @@ input[type="checkbox"].test-checkbox::after {
 input[type="checkbox"].test-checkbox:checked::after {
     opacity: 1;
 }
+            .navbar {
+            background-color: rgba(20, 57, 97, 0.8); /* Background color */
+            padding: 10px 20px; /* Padding for the navbar */
+            position: fixed; /* Fixed position at the top */
+            top: 0;
+            left: 0;
+            width: 100%; /* Full width */
+            z-index: 1030; /* Ensure it stays on top of other elements */
+        }
+
+        .navbar-brand, .nav-link {
+            color: white;
+        }
+
+        .nav-link {
+            margin-right: 15px;
+        }
+
+        .nav-link:hover {
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        .btn-custom {
+            background-color: white;
+            color: rgba(20, 57, 97, 0.8);
+            border: none;
+            border-radius: 4px;
+            padding: 10px 20px;
+            font-size: 16px;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        .btn-custom:hover {
+            background-color: rgba(20, 57, 97, 0.8);
+            color: white;
+        }
+     body {
+            margin: 0;
+            padding-top: 100px; /* Adjust according to the height of your navbar */
+        }
+
+        .container {
+            padding: 20px;
+        }
+        .back-button {
+    position: fixed;
+    top: 100px;
+    left: 80px;
+    padding: 10px 20px;
+    background-color: white;
+    color: rgba(20, 57, 97, 0.8);
+    border-radius: 4px;
+    text-decoration: none;
+    font-size: 16px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.back-button:hover {
+    background-color: rgba(20, 57, 97, 0.8);
+    color: white;
+}
+
+/* Optional: Add Font Awesome for the arrow icon */
+.fas.fa-arrow-left {
+    margin-right: 8px;
+}
 
     </style>
 </head>
 
 <body>
+         <a href="/" class="btn btn-light back-button">
+        <i class="fas fa-arrow-left"></i> Back
+    </a>
+    <nav class="navbar navbar-expand-lg">
+        <a class="navbar-brand" href="/"><img src="static/logo-white.svg" alt="Logo" width="30" height="30" class="d-inline-block align-top">M&P | SAF-T</a>
+        <div class="collapse navbar-collapse">
+            <ul class="navbar-nav">
+                <li class="nav-item">
+                    <a class="nav-link" href="/">For Companies</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/audit-tests">For Auditors</a>
+                </li>
+               
+            </ul>
+        </div>
+    </nav>
     
     <div class="container">
         <form id="runTestsForm" action="/run-tests" method="POST" enctype="multipart/form-data">
@@ -317,7 +406,7 @@ input[type="checkbox"].test-checkbox:checked::after {
                     <div class="test-item">
                         <div class="checkbox-wrapper">
                             <input type="checkbox" class="test-checkbox" id="test1" name="consistency">
-                            <button type="button" class="btn btn-secondary" data-toggle="tooltip" data-placement="left" title="Consistency">
+                            <button type="button" class="btn btn-secondary" data-toggle="modal" data-target="#consistencyModal" data-placement="left" title="Consistency">
                                 SAF-T Consistency Test | Preview of ANAF’s checks
                             </button>
                         </div>
@@ -397,11 +486,11 @@ input[type="checkbox"].test-checkbox:checked::after {
     </form>
     </div>
 
-    <div class="modal fade" id="journalEntriesModal" tabindex="-1" role="dialog" aria-labelledby="journalEntriesModalLabel" aria-hidden="true">
+    <div class="modal fade" id="consistencyModal" tabindex="-1" role="dialog" aria-labelledby="consistencyModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="journalEntriesModalLabel">Journal Entries Analysis</h5>
+                    <h5 class="modal-title" id="consistencyModalLabel">Consistency Tests</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -418,13 +507,13 @@ input[type="checkbox"].test-checkbox:checked::after {
                     <div class="form-group">
                         <div class="custom-control custom-checkbox">
                             <input type="checkbox" class="custom-control-input" id="checkboxMissingEntries">
-                            <label class="custom-control-label" for="checkboxMissingEntries">Missing Journal Entries</label>
+                            <label class="custom-control-label" for="checkboxMissingEntries">Check Tax Codes for GL</label>
                         </div>
                         <div class="custom-control custom-checkbox">
                             <input type="checkbox" class="custom-control-input" id="checkboxLargeAmounts">
-                            <label class="custom-control-label" for="checkboxLargeAmounts">Large amounts</label>
+                            <label class="custom-control-label" for="checkboxLargeAmounts">Check on VAT Percentage</label>
                         </div>
-                        <div class="custom-control custom-checkbox">
+                <!--         <div class="custom-control custom-checkbox">
                             <input type="checkbox" class="custom-control-input" id="checkboxSpecificComments">
                             <label class="custom-control-label" for="checkboxSpecificComments">Specific comments</label>
                         </div>
@@ -432,10 +521,7 @@ input[type="checkbox"].test-checkbox:checked::after {
                             <input type="checkbox" class="custom-control-input" id="checkboxPostedWeekends">
                             <label class="custom-control-label" for="checkboxPostedWeekends">Posted on weekends</label>
                         </div>
-                        <!-- <div class="custom-control custom-checkbox">
-                            <input type="checkbox" class="custom-control-input" id="checkboxPostedSpecificDays">
-                            <label class="custom-control-label" for="checkboxPostedSpecificDays">Posted on specific days</label>
-                        </div> -->
+                       
                         <div class="custom-control custom-checkbox">
                             <input type="checkbox" class="custom-control-input" id="checkboxPostedByUser">
                             <label class="custom-control-label" for="checkboxPostedByUser">Posted by user</label>
@@ -458,7 +544,7 @@ input[type="checkbox"].test-checkbox:checked::after {
                         </div>
                     </div>
     
-                    <!-- Additional form fields (if needed) -->
+                
                     <div class="form-group" id="thresholdInput" style="display: none;color:black">
                         <label for="threshold" style="color:black;">Threshold:</label>
                         <input type="number" class="form-control" id="threshold" placeholder="Enter threshold">
@@ -466,21 +552,11 @@ input[type="checkbox"].test-checkbox:checked::after {
                     <div class="form-group" id="specificCommentsInput" style="display: none;color:black">
                         <label for="specificComments" style="color:black;">Please insert comments below:</label>
                         <label for="specificComments" style="color:black;">*if there are more please use ";" separator:</label>
-                        <textarea  class="form-control" id="specificComments" placeholder="Enter specific comments"></textarea>
-                    </div>
-                    <!-- <div class="form-group">
-                        <label for="journal-year-end" style="color:black">Year End:</label>
-                        <input type="date" class="form-control" id="journal-year-end">
-                    </div>
-                    <div class="form-group">
-                        <label for="journal-entry-client-name"style="color:black">Client name:</label>
-                        <input type="text" class="form-control" id="journal-entry-client-name" placeholder="Enter client name">
-                    </div>
-                    <div class="form-group">
-                        <label for="journal-entry-refference" style="color:black">Refference:</label>
-                        <input type="text" class="form-control" id="journal-entry-refference" placeholder="Enter refference ">
-                    </div> -->
+                        <te xtarea  class="form-control" id="specificComments" placeholder="Enter specific comments"></textarea>
+                    </div>-->
+                    
                 </div>
+            </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                     <button type="button" class="btn btn-primary" onclick="saveJournalEntries()">Save changes</button>
@@ -488,7 +564,7 @@ input[type="checkbox"].test-checkbox:checked::after {
             </div>
         </div>
     </div>
-    <div class="modal fade" id="tradeReceivablesModal" tabindex="-1" role="dialog" aria-labelledby="tradeReceivablesModalLabel" aria-hidden="true">
+    <!-- <div class="modal fade" id="tradeReceivablesModal" tabindex="-1" role="dialog" aria-labelledby="tradeReceivablesModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
                 <div class="modal-header">
@@ -498,7 +574,7 @@ input[type="checkbox"].test-checkbox:checked::after {
                     </button>
                 </div>
                 <div class="modal-body">
-                    <!-- Checkboxes -->
+                  
                     <div class="form-group">
                         <div class="custom-control custom-checkbox">
                             <input type="checkbox" class="custom-control-input" id="checkboxSelectAllTrade">
@@ -526,28 +602,15 @@ input[type="checkbox"].test-checkbox:checked::after {
                         
                     </div>
     
-                    <!-- Additional form fields (if needed) -->
-                    <!-- <div class="form-group">
-                        <label for="trade-receivable-year-end" style="color:black">Year end:</label>
-                        <input type="date" class="form-control" id="trade-receivable-year-end">
-                    </div>
-                    <div class="form-group">
-                        <label for="trade-receivable-description" style="color:black">Description:</label>
-                        <input type="text" class="form-control" id="trade-receivable-description" placeholder="Enter description">
-                    </div> -->
-                    <!-- <div class="form-group">
-                        <label for="trade-receivable-amount" style="color:black">Amount:</label>
-                        <input type="number" class="form-control" id="trade-receivable-amount" placeholder="Enter amount" min="0">
-                    </div> -->
-                </div>
+                              </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                     <button type="button" class="btn btn-primary" onclick="saveTradeReceivables()">Save changes</button>
                 </div>
             </div>
         </div>
-    </div>
-    <div class="modal fade" id="salesAnalysisModal" tabindex="-1" role="dialog" aria-labelledby="salesAnalysisModalLabel" aria-hidden="true">
+    </div> -->
+    <!-- <div class="modal fade" id="salesAnalysisModal" tabindex="-1" role="dialog" aria-labelledby="salesAnalysisModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
                 <div class="modal-header">
@@ -557,7 +620,7 @@ input[type="checkbox"].test-checkbox:checked::after {
                     </button>
                 </div>
                 <div class="modal-body">
-                    <!-- Checkboxes -->
+                  
                     <div class="form-group">
                         <div class="custom-control custom-checkbox">
                             <input type="checkbox" class="custom-control-input" id="checkboxSelectAllSales">
@@ -613,7 +676,7 @@ input[type="checkbox"].test-checkbox:checked::after {
                 </div>
             </div>
         </div>
-    </div>
+    </div> -->
     <!-- Modal pentru afișarea mesajului și listei de teste -->
 <div class="modal fade" id="runningTestsModal" tabindex="-1" role="dialog" aria-labelledby="runningTestsModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
@@ -627,7 +690,7 @@ input[type="checkbox"].test-checkbox:checked::after {
             <div class="modal-body">
                 <p>Please wait while the tests are running.</p>
                 <p>An automatic download will start once the process is finished</p>
-                <p> Selected tests:</p>
+                <p>Selected tests:</p>
                 <ul id="selectedTestsList"></ul>
             </div>
             <div class="modal-footer">
@@ -637,13 +700,16 @@ input[type="checkbox"].test-checkbox:checked::after {
     </div>
 </div>
 
+
     <!-- jQuery and Bootstrap JS -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
 
+
     <!-- Script for tooltips and file input -->
     <script>
         $(document).ready(function() {
+
             $('#testsSelectAll').click(function() {
         var checkboxes = $('.test-checkbox').not(this);
         checkboxes.prop('checked', $(this).prop('checked'));
@@ -670,7 +736,7 @@ input[type="checkbox"].test-checkbox:checked::after {
     console.log('Notes entered:', notes);
 
     // Close the modal programmatically
-    $('#journalEntriesModal').modal('hide');
+    $('#consistencyModal').modal('hide');
 }
         function runSelectedTests() {
             // Implement your logic to run selected tests here
@@ -678,42 +744,44 @@ input[type="checkbox"].test-checkbox:checked::after {
             $('.test-item input[type="checkbox"]').not('#checkboxSelectAll').each(function() {
                 if ($(this).is(':checked')) {
                     selectedTests.push($(this).next('button').text().trim());
+                    // alert(selectedTests)
                 }
 
             });
-            $.ajax({
-        url: '/run_tests',
-        type: 'POST',
-        contentType: 'application/json',
-        data: JSON.stringify({ tests: selectedTests }),
-        success: function(response) {
-            console.log('Data sent successfully:', response);
-            alert(tests)
-        },
-        error: function(xhr, status, error) {
-            console.error('Error sending data:', error);
-        }
-    });
+    //         $.ajax({
+    //     url: '/run_tests',
+    //     type: 'POST',
+    //     contentType: 'application/json',
+    //     data: JSON.stringify({ tests: selectedTests }),
+    //     success: function(response) {
+    //         console.log('Data sent successfully:', response);
+    //         // alert(tests)
+    //     },
+    //     error: function(xhr, status, error) {
+    //         console.error('Error sending data:', error);
+    //     }
+    // });
               // Adaugă checkboxes bifate din modalul "Journal Entries Analysis"
-    $('#journalEntriesModal .custom-control-input').not('#checkboxSelectAll').each(function() {
+    $('#consistencyModal .custom-control-input').not('#checkboxSelectAll').each(function() {
         if ($(this).is(':checked')) {
             selectedTests.push($(this).next('label').text().trim());
+
         }
     });
     
     // Adaugă checkboxes bifate din modalul "Trade Receivables"
-    $('#tradeReceivablesModal .custom-control-input').not('#checkboxSelectAllTrade').each(function() {
-        if ($(this).is(':checked')) {
-            selectedTests.push($(this).next('label').text().trim());
-        }
+    // $('#tradeReceivablesModal .custom-control-input').not('#checkboxSelectAllTrade').each(function() {
+    //     if ($(this).is(':checked')) {
+    //         selectedTests.push($(this).next('label').text().trim());
+    //     }
     
-    });
-    $('#salesAnalysisModal .custom-control-input').not('#checkboxSelectAllSales').each(function() {
-        if ($(this).is(':checked')) {
-            selectedTests.push($(this).next('label').text().trim());
-        }
+    // });
+    // $('#salesAnalysisModal .custom-control-input').not('#checkboxSelectAllSales').each(function() {
+    //     if ($(this).is(':checked')) {
+    //         selectedTests.push($(this).next('label').text().trim());
+    //     }
     
-    });
+    // });
     
 
     if (selectedTests.length > 0) {
@@ -722,10 +790,12 @@ input[type="checkbox"].test-checkbox:checked::after {
             
             $.each(selectedTests, function(index, test) {
                 $('#selectedTestsList').append('<li>' + test + '</li>');
+                // alert(selectedTests)
             });
             
             // Afișează modalul pentru a informa utilizatorul despre rularea testelor
             $('#runningTestsModal').modal('show');
+            // alert("hai")
             
             // Simulează o întârziere de 3 secunde pentru a simula rularea testelor
             setTimeout(function() {
@@ -745,93 +815,93 @@ input[type="checkbox"].test-checkbox:checked::after {
         $(document).ready(function() {
     // Select All functionality
     $('#checkboxSelectAll').click(function() {
-        var checkboxes = $('#journalEntriesModal .custom-control-input').not(this);
+        var checkboxes = $('#consistencyModal .custom-control-input').not(this);
         checkboxes.prop('checked', $(this).prop('checked'));
     });
     
 });
-$(document).ready(function() {
-    // // Select All functionality for Journal Entries
-    // $('#checkboxSelectAll').click(function() {
-    //     var checkboxes = $('.custom-control-input').not(this);
-    //     checkboxes.prop('checked', $(this).prop('checked'));
-    // });
+// $(document).ready(function() {
+//     // // Select All functionality for Journal Entries
+//     // $('#checkboxSelectAll').click(function() {
+//     //     var checkboxes = $('.custom-control-input').not(this);
+//     //     checkboxes.prop('checked', $(this).prop('checked'));
+//     // });
 
-    // Select All functionality for Trade Receivables
-    $('#checkboxSelectAllTrade').click(function() {
-        var checkboxes = $('#tradeReceivablesModal .custom-control-input').not(this);
-        checkboxes.prop('checked', $(this).prop('checked'));
-    });
-});
+//     // Select All functionality for Trade Receivables
+//     $('#checkboxSelectAllTrade').click(function() {
+//         var checkboxes = $('#tradeReceivablesModal .custom-control-input').not(this);
+//         checkboxes.prop('checked', $(this).prop('checked'));
+//     });
+// });
 
 
-$(document).ready(function() {
-    // // Select All functionality for Journal Entries
-    // $('#checkboxSelectAll').click(function() {
-    //     var checkboxes = $('.custom-control-input').not(this);
-    //     checkboxes.prop('checked', $(this).prop('checked'));
-    // });
+// $(document).ready(function() {
+//     // // Select All functionality for Journal Entries
+//     // $('#checkboxSelectAll').click(function() {
+//     //     var checkboxes = $('.custom-control-input').not(this);
+//     //     checkboxes.prop('checked', $(this).prop('checked'));
+//     // });
 
-    // Select All functionality for Trade Receivables
-    $('#checkboxSelectAllSales').click(function() {
-        var checkboxes = $('#salesAnalysisModal .custom-control-input').not(this);
-        checkboxes.prop('checked', $(this).prop('checked'));
-    });
-});
+//     // Select All functionality for Trade Receivables
+//     $('#checkboxSelectAllSales').click(function() {
+//         var checkboxes = $('#salesAnalysisModal .custom-control-input').not(this);
+//         checkboxes.prop('checked', $(this).prop('checked'));
+//     });
+// });
 
-function saveSalesAnalysis() {
-    // Implement save logic here
+// function saveSalesAnalysis() {
+//     // Implement save logic here
 
-    // Automatically check the checkbox for this modal after saving
-    $('#test11').prop('checked', true);
+//     // Automatically check the checkbox for this modal after saving
+//     $('#test11').prop('checked', true);
     
-    // Close the modal
-    $('#salesAnalysisModal').modal('hide');
-}
+//     // Close the modal
+//     $('#salesAnalysisModal').modal('hide');
+// }
 
 
 
-function saveTradeReceivables() {
-    // Implement save logic here
+// function saveTradeReceivables() {
+//     // Implement save logic here
 
-    // Automatically check the checkbox for this modal after saving
-    $('#test5').prop('checked', true);
+//     // Automatically check the checkbox for this modal after saving
+//     $('#test5').prop('checked', true);
     
-    // Close the modal
-    $('#tradeReceivablesModal').modal('hide');
-}
+//     // Close the modal
+//     $('#tradeReceivablesModal').modal('hide');
+// }
     // Function to save journal entries (placeholder)
     function saveJournalEntries() {
         // Implement save logic here
         // alert('Changes saved successfully!');
-        $('#journalEntriesModal').modal('hide');
-        $('#test12').prop('checked', true);
+        $('#consistencyModal').modal('hide');
+        $('#test1').prop('checked', true);
 
     }
-    document.addEventListener("DOMContentLoaded", function() {
-        const largeAmountsCheckbox = document.getElementById('checkboxLargeAmounts');
-        const thresholdInput = document.getElementById('thresholdInput');
+    // document.addEventListener("DOMContentLoaded", function() {
+    //     const largeAmountsCheckbox = document.getElementById('checkboxLargeAmounts');
+    //     const thresholdInput = document.getElementById('thresholdInput');
 
-        largeAmountsCheckbox.addEventListener('change', function() {
-            if (this.checked) {
-                thresholdInput.style.display = 'block';
-            } else {
-                thresholdInput.style.display = 'none';
-            }
-        });
-    });
-    document.addEventListener("DOMContentLoaded", function() {
-        const specificCommentsCheckbox = document.getElementById('checkboxSpecificComments');
-        const commentsInput = document.getElementById('specificCommentsInput');
+    //     largeAmountsCheckbox.addEventListener('change', function() {
+    //         if (this.checked) {
+    //             thresholdInput.style.display = 'block';
+    //         } else {
+    //             thresholdInput.style.display = 'none';
+    //         }
+    //     });
+    // });
+    // document.addEventListener("DOMContentLoaded", function() {
+    //     const specificCommentsCheckbox = document.getElementById('checkboxSpecificComments');
+    //     const commentsInput = document.getElementById('specificCommentsInput');
 
-        specificCommentsCheckbox.addEventListener('change', function() {
-            if (this.checked) {
-                commentsInput.style.display = 'block';
-            } else {
-                commentsInput.style.display = 'none';
-            }
-        });
-    });
+    //     specificCommentsCheckbox.addEventListener('change', function() {
+    //         if (this.checked) {
+    //             commentsInput.style.display = 'block';
+    //         } else {
+    //             commentsInput.style.display = 'none';
+    //         }
+    //     });
+    // });
     </script>
 </body>
 </html>
