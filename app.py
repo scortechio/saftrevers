@@ -21,10 +21,13 @@ def login():
     return render_template('login.html')
 @app.route('/audit-tests')
 def index():
-    return render_template('incarcare.html')
+    return render_template('home2.html')
 @app.route('/review-tests')
 def index2():
     return render_template('etva - Copy (2).html')
+@app.route('/audittests')
+def index3():
+    return render_template('incarcare.html')
 # @app.route('/run-tests', methods=['POST'])
 # def upload_file():
 #     if request.method=="POST":
