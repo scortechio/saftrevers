@@ -23,9 +23,9 @@ def login():
 @app.route('/review-tests')
 def index():
     return render_template('etva - Copy (2).html')
-@app.route('/review-tests')
-def index2():
-    return render_template('review.html')
+@app.route('/audit-tests')
+def index():
+    return render_template('incarcare.html')
 # @app.route('/run-tests', methods=['POST'])
 # def upload_file():
 #     if request.method=="POST":
