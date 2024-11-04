@@ -3,7 +3,6 @@ import os
 import time
 import pandas as pd
 from time import sleep
-from try2 import *
 
 app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = 'uploads'
