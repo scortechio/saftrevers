@@ -28,6 +28,9 @@ def index2():
 @app.route('/audittests')
 def index3():
     return render_template('incarcare.html')
+@app.route('/reviewtests')
+def index4():
+    return render_template('review.html')
 # @app.route('/run-tests', methods=['POST'])
 # def upload_file():
 #     if request.method=="POST":
