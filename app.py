@@ -25,7 +25,7 @@ def index():
     return render_template('incarcare.html')
 @app.route('/review-tests')
 def index2():
-    return render_template('review.html')
+    return render_template('etva - Copy (2).html')
 # @app.route('/run-tests', methods=['POST'])
 # def upload_file():
 #     if request.method=="POST":
@@ -79,12 +79,6 @@ def index2():
 #                 )
 #         print(selected_tests, "=====================")
 #         return send_from_directory('D:/30. SAF-T Reversed/30. SAF-T Reversed/TEST' , file.filename.replace(".xml", ".xlsx"))
-@app.route('/run-tests', methods=['POST'])
-def upload_file():
-    sleep(8)
-    selected_tests = request.form.getlist('tests')
-    print(selected_tests)
-    return send_from_directory(app.config['RESULTS_FOLDER'] , 'selected Tests.7z')
 
 
 if __name__ == '__main__':
