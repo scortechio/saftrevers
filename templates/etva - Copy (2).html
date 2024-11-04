@@ -1,0 +1,1909 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interfață e-TVA</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <style>
+        /* General Styling */
+        body {
+            font-family: "Century Gothic", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+            background-color: #f0f0f0;
+            background-image: url('static/background24.jpg');
+            background-size: cover;
+            background-attachment: fixed;
+            margin: 0;
+            display: flex;
+            height: 100vh;
+            position: relative; /* Adăugat pentru a permite poziționarea absolută a butonului */
+        }
+
+        /* Background Blur Effect */
+        body::before {
+            content: "";
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url('static/background24.jpg');
+            background-size: cover;
+            filter: blur(4px);
+            z-index: -1;
+        }
+
+        /* Container Styling */
+        .app-container {
+            display: flex;
+            flex-direction: column;
+            flex-grow: 1;
+            transition: margin-left 0.3s ease;
+            margin-left: 250px; /* Width of sidebar */
+            padding: 20px;
+            background-color: rgba(20, 57, 97, 0.85);
+        }
+
+        .app-container.sidebar-hidden {
+            margin-left: 0;
+        }
+
+        /* Sidebar Styling */
+        .sidebar {
+            width: 250px;
+            background-color: rgba(20, 57, 97, 0.9);
+            color: white;
+            padding: 20px;
+            height: 100vh;
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 1000;
+            transition: transform 0.3s ease;
+        }
+
+        .sidebar.hidden {
+            transform: translateX(-100%);
+        }
+
+        .toggle-button {
+            position: fixed; /* Poziționare fixă */
+            top: 20px; /* Spațiu față de partea de sus */
+            left: 20px; /* Spațiu față de partea stângă */
+            background: none;
+            border: none;
+            color: white;
+            font-size: 24px;
+            cursor: pointer;
+            z-index: 1006;
+            /*margin-bottom: 60px;  Asigură că butonul este deasupra altor elemente */
+             margin-bottom: 80px;
+             margin-top: 60px;
+
+              /* Ajustează acest număr pentru a modifica distanța */
+    /*margin-top: 20px; */
+        }
+
+        /* Tabs */
+        .tabs {
+            display: flex;
+            flex-direction: column;
+            margin-bottom: 20px;
+        }
+
+        .tab {
+            padding: 10px;
+            cursor: pointer;
+            font-size: 18px;
+            color: #ccc;
+            transition: color 0.3s, background-color 0.3s;
+            border-radius: 4px;
+        }
+
+        .tab.active, .tab:hover {
+            color: #00aaff;
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+
+        /* Main Content */
+        .main-content {
+            flex-grow: 1;
+            padding: 20px;
+            color: white;
+        }
+
+        /* Search Bar */
+        .search-wrapper {
+            text-align: center;
+            margin: 20px 0;
+        }
+
+        .search-input-container {
+            position: relative;
+            display: inline-block;
+            width: 80%;
+            max-width: 400px;
+        }
+
+        .search-input-container input[type="text"] {
+            padding: 12px 50px 12px 20px;
+            width: 100%;
+            font-size: 14px;
+            border: none;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: box-shadow 0.3s;
+        }
+
+        .search-input-container input[type="text"]:focus {
+            box-shadow: 0 0 8px #00aaff;
+            outline: none;
+        }
+
+        .search-btn {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            background-color: #00aaff;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            padding: 10px;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.3s;
+        }
+
+        .search-btn:hover {
+            background-color: #007bb5;
+            transform: scale(1.1);
+        }
+
+        /* Table Styling */
+        .table-responsive {
+            overflow-x: auto;
+            margin-top: 20px;
+        }
+
+        .styled-table {
+            width: 100%;
+            border-collapse: collapse;
+            color: white;
+            font-size: 14px;
+        }
+
+        .styled-table th, .styled-table td {
+            padding: 12px;
+            text-align: center;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+            transition: background-color 0.3s;
+        }
+
+        .styled-table th {
+            background-color: rgba(20, 57, 97, 0.9);
+        }
+
+        .styled-table tr:nth-child(even) {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+
+        .styled-table tr:hover td {
+            background-color: rgba(20, 57, 97, 0.7);
+        }
+
+        /* Button Styling */
+    /*    .export-btn {
+            background-color: #00aaff;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 10px 20px;
+            margin: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }*/    
+/* Button Styling */
+/* Button Styling */
+.export-section {
+    display: flex; /* Afișare flex pentru a alinia butoanele pe aceeași linie */
+    justify-content: center; /* Centrare orizontală a butoanelor */
+    margin: 20px 0; /* Marjă de sus și jos */
+}
+
+.export-btn {
+    background: linear-gradient(135deg, rgba(0, 160, 255, 0.8), rgba(0, 123, 182, 0.8)); /* Gradient de fundal */
+    color: white; /* Culoare text */
+    border: none; /* Fără bordură */
+    border-radius: 25px; /* Colțuri rotunjite */
+    padding: 12px 25px; /* Spațiere interioară */
+    margin: 0 10px; /* Marjă între butoane */
+    cursor: pointer; /* Pointer pe hover */
+    transition: background-color 0.3s, transform 0.3s, box-shadow 0.3s; /* Efecte de tranziție */
+    font-size: 16px; /* Dimensiunea fontului */
+    font-weight: 600; /* Font îngroșat */
+    display: flex; /* Flexbox pentru aliniere */
+    align-items: center; /* Centrare verticală */
+    justify-content: center; /* Centrare orizontală */
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); /* Umbră mai mare */
+}
+
+.export-btn:hover {
+    background: linear-gradient(135deg, rgba(0, 99, 153, 0.9), rgba(0, 140, 255, 0.9)); /* Gradient mai închis la hover */
+    transform: translateY(-3px); /* Ușor ridicat la hover */
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3); /* Umbră mai pronunțată la hover */
+}
+
+/* Icon Styles */
+.export-icon {
+    margin-right: 5px; /* Spațiu între iconițe și text */
+    font-size: 18px; /* Dimensiunea iconiței */
+}
+/* Table Wrapper */
+.data-table-wrapper {
+    margin-top: 20px; /* Marjă între tabel și elementele de sus */
+}
+
+/* Table Styling */
+.styled-table {
+    width: 100%; /* Lățimea tabelului */
+    border-collapse: collapse; /* Elimină marginile dintre celule */
+    border: 2px solid white; /* Margine exterioară albă */
+    border-radius: 8px; /* Colțuri rotunjite */
+    overflow: hidden; /* Ascunde marginile colțurilor rotunjite */
+    background: rgba(20, 57, 97, 0.85); /* Fundal transparent pentru tabel */
+}
+
+/* Header Styling */
+.styled-table thead {
+    background: linear-gradient(135deg, rgba(0, 160, 255, 0.7), rgba(0, 123, 182, 0.7)); /* Gradient pentru header */
+    color: white; /* Culoare text */
+}
+
+/* Table Header */
+.styled-table th {
+    padding: 12px; /* Spațiu interior pentru header */
+    text-align: center; /* Aliniere centrală */
+    border-bottom: 2px solid white; /* Margine de sub header */
+}
+
+/* Table Body */
+.styled-table tbody tr {
+    transition: background-color 0.3s; /* Efect de tranziție la hover */
+}
+
+.styled-table tbody tr:nth-child(even) {
+    background-color: rgba(255, 255, 255, 0.05); /* Fundal deschis pentru rânduri pare */
+}
+
+.styled-table tbody tr:hover {
+    background-color: rgba(0, 160, 255, 0.3); /* Fundal albastru la hover */
+}
+
+/* Table Cells */
+.styled-table td {
+    padding: 12px; /* Spațiu interior pentru celule */
+    text-align: center; /* Aliniere centrală */
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2); /* Margine de jos pentru celule */
+    color: white; /* Culoare text pentru celule */
+}
+/* Search Wrapper */
+.search-wrapper {
+    text-align: center; /* Centrăm conținutul */
+    margin: 20px 0; /* Margine sus/jos */
+}
+
+/* Search Input Container */
+.search-input-container {
+    position: relative; /* Necesită pentru a plasa butonul de căutare */
+    display: inline-block; /* Aliniere orizontală */
+    width: 80%; /* Lățimea câmpului de căutare */
+    max-width: 400px; /* Lățime maximă */
+}
+
+/* Input Field Styling */
+.search-input-container input[type="text"] {
+    padding: 12px 50px 12px 20px; /* Spațiu interior */
+    width: 100%; /* Lățimea câmpului */
+    font-size: 16px; /* Mărimea fontului */
+    border: 2px solid white; /* Margine albă */
+    border-radius: 8px; /* Colțuri rotunjite */
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2); /* Umbră */
+    transition: box-shadow 0.3s, border-color 0.3s; /* Efecte de tranziție */
+    background: rgba(255, 255, 255, 0.1); /* Fundal transparent */
+    color: white; /* Culoare text */
+}
+
+/* Input Field Focus */
+.search-input-container input[type="text"]:focus {
+    box-shadow: 0 0 12px rgba(0, 160, 255, 0.7); /* Umbră mai puternică la focus */
+    border-color: rgba(0, 160, 255, 0.7); /* Schimbă culoarea marginii */
+    outline: none; /* Elimină conturul implicit */
+}
+
+/* Search Button Styling */
+.search-btn {
+    position: absolute; /* Poziționare absolută față de container */
+    right: 10px; /* Distanța de marginea dreaptă */
+    top: 50%; /* Centrăm vertical */
+    transform: translateY(-50%); /* Ajustăm pentru aliniere perfectă */
+    background-color: rgba(0, 160, 255, 0.7); /* Fundal albastru transparent */
+    color: white; /* Culoare text */
+    border: none; /* Fără margine */
+    border-radius: 50%; /* Rotund */
+    padding: 10px; /* Spațiu interior */
+    cursor: pointer; /* Cursor pointer la hover */
+    transition: background-color 0.3s, transform 0.3s; /* Efecte de tranziție */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); /* Umbră */
+}
+
+.highlight:hover {
+    background-color: #005f99; /* Nuanță mai închisă la hover */
+    transform: scale(1.02); /* Ușor mărit la hover pentru efect */
+}
+/* Search Button Hover */
+.search-btn:hover {
+    background-color: rgba(0, 140, 220, 0.9); /* Fundal mai închis la hover */
+    transform: scale(1.1); /* Ușor mărit la hover */
+}
+/* Sidebar Styling */
+/* Sidebar Styling */
+/* Sidebar Styling */
+.sidebar {
+    width: 250px; /* Lățimea sidebar-ului */
+    background-color: rgba(20, 57, 97, 0.9);
+    color: white;
+    padding: 20px;
+    height: 100vh; /* Se asigură că sidebar-ul se extinde pe întreaga înălțime */
+    position: fixed; /* Păstrează sidebar-ul fix în stânga */
+    top: 0;
+    left: 0;
+    z-index: 1000;
+    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.5); /* Adăugăm o umbră */
+}
+
+/* Container Styling */
+.app-container {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+    transition: margin-left 0.3s ease;
+    margin-left: 300px; /* Crește lățimea la 300px sau mai mult */
+    padding: 20px; /* Padding pentru confort */
+    background-color: rgba(20, 57, 97, 0.85);
+    min-height: 100vh; /* Asigură o înălțime minimă */
+}
+
+/* Table Styling */
+.styled-table {
+    width: 100%; /* Lățimea tabelului */
+    border-collapse: collapse; /* Elimină marginile dintre celule */
+    border: 2px solid white; /* Margine exterioară albă */
+    border-radius: 8px; /* Colțuri rotunjite */
+    overflow: hidden; /* Ascunde marginile colțurilor rotunjite */
+    background: rgba(20, 57, 97, 0.85); /* Fundal transparent pentru tabel */
+}
+
+/* Header Styling */
+.styled-table thead {
+    background: linear-gradient(135deg, rgba(0, 160, 255, 0.7), rgba(0, 123, 182, 0.7)); /* Gradient pentru header */
+    color: white; /* Culoare text */
+}
+
+/* Table Header */
+.styled-table th {
+    padding: 12px; /* Spațiu interior pentru header */
+    text-align: center; /* Aliniere centrală */
+    border-bottom: 3px solid rgba(255, 255, 255, 0.8); /* Margine mai groasă de sub header */
+}
+
+/* Table Body */
+.styled-table tbody tr {
+    transition: background-color 0.3s; /* Efect de tranziție la hover */
+}
+
+.styled-table tbody tr:nth-child(even) {
+    background-color: rgba(255, 255, 255, 0.05); /* Fundal deschis pentru rânduri pare */
+}
+
+.styled-table tbody tr:nth-child(odd) {
+    background-color: rgba(255, 255, 255, 0.1); /* Fundal puțin mai deschis pentru rânduri impare */
+}
+
+.styled-table tbody tr:hover {
+    background-color: rgba(0, 160, 255, 0.5); /* Fundal albastru la hover */
+}
+
+/* Table Cells */
+.styled-table td {
+    padding: 12px; /* Spațiu interior pentru celule */
+    text-align: center; /* Aliniere centrală */
+    border-bottom: 2px solid rgba(255, 255, 255, 0.3); /* Margine de jos pentru celule */
+    color: white; /* Culoare text pentru celule */
+}
+
+/* Optional: Add a border to the sides of each cell */
+.styled-table td, .styled-table th {
+    border-right: 1px solid rgba(255, 255, 255, 0.3); /* Bordura pe dreapta */
+}
+
+/* Remove the border on the last column */
+.styled-table tr td:last-child, .styled-table tr th:last-child {
+    border-right: none; /* Elimină bordura pentru ultima coloană */
+}
+
+
+    </style>
+</head>
+<body>
+    <button class="toggle-button" onclick="toggleSidebar()">☰</button>
+
+    <div class="sidebar" id="sidebar">
+        <h2 style="margin-top: 120px;">Navigare</h2>
+        <div class="tabs">
+            <div class="tab active" onclick="openTab(event, 'tab1')"><i class="fas fa-chart-bar"></i> Decont precompletat</div>
+            <div class="tab" onclick="openTab(event, 'tab2')"><i class="fas fa-balance-scale"></i> Declaratii</div>
+        </div>
+    </div>
+
+    <div class="app-container">
+        <h1 class="app-title" style="color:white;margin-bottom: 30px;">e-TVA</h1>
+        
+        <div class="main-content">
+            <!-- Search Bar -->
+            <div class="search-wrapper">
+                <div class="search-input-container">
+                    <input type="text" id="search-table" placeholder="Căutare în tabel...">
+                    <button class="search-btn"><i class="fas fa-search"></i></button>
+                </div>
+            </div>
+
+            <!-- Tab 1 -->
+            <div id="tab1" class="tab-content active">
+                <div class="export-section">
+    <button id="export-csv-2" class="export-btn">
+        <i class="fas fa-file-csv export-icon"></i>Export CSV
+    </button>
+    <button id="export-excel-2" class="export-btn">
+        <i class="fas fa-file-excel export-icon"></i>Export Excel
+    </button>
+</div>
+
+
+                <!-- Tabel 1 -->
+                <div class="data-table-wrapper">
+                    <table id="data-table" class="styled-table">
+                        <thead>
+       <!--  <tr style='background-color: transparent;'>
+            <th style="text-align: center; vertical-align: center; padding-left: 30px;"></th>
+            <th class="header-sursa" colspan="1" >Sursa</th>
+            <th class="header-anaf" colspan="6" >ANAF Decont precompletat</th> 
+            <th class="header-decont" colspan="6" >P300</th>
+        </tr> -->
+        <tr style='background-color: transparent;'>
+           <!--  <th style="text-align: center; vertical-align: center; position: center; float:center; align-items: center; padding-left: 30px;"><input type="checkbox" id="select-all-2"></th> -->
+            <th>Linie</th>
+            <th>D300</th>
+            <th>Efactura- Decont</th>
+            <th>Etransport- Decont</th>
+            <th>EFactura - Detalii</th>
+            <th>Etransport- Detalii</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <!-- <td><input type="checkbox"></td> -->
+            <td style="
+    font-weight: bold; 
+    color: #ffffff; /* Culoare albă pentru text */
+    background-color: #007acc; /* Albastru închis, elegant */
+    border: 1px solid #005f99; /* Bordură mai închisă pentru un contrast subtil */
+    padding: 12px; 
+    text-align: center; 
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); /* Umbră subtilă */
+    transition: background-color 0.3s, transform 0.3s; /* Tranziție pentru hover */
+">1 Baza</td>
+            <td >24,500</td>
+            <td>0</td>
+            <td>24,500</td>
+            <td>0</td>
+            <td>24,500</td>
+        </tr>
+        <tr>
+            <!-- <td><input type="checkbox"></td> -->
+            <td style="
+    font-weight: bold; 
+    color: #ffffff; /* Culoare albă pentru text */
+    background-color: #007acc; /* Albastru închis, elegant */
+    border: 1px solid #005f99; /* Bordură mai închisă pentru un contrast subtil */
+    padding: 12px; 
+    text-align: center; 
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); /* Umbră subtilă */
+    transition: background-color 0.3s, transform 0.3s; /* Tranziție pentru hover */
+">5.1 Baza</td>
+            <td>0</td>
+            <td>0</td>
+            <td>0</td>
+            <td>0</td>
+            <td>0</td>
+        </tr>
+        <tr>
+            <!-- <td><input type="checkbox"></td> -->
+            <td style="
+    font-weight: bold; 
+    color: #ffffff; /* Culoare albă pentru text */
+    background-color: #007acc; /* Albastru închis, elegant */
+    border: 1px solid #005f99; /* Bordură mai închisă pentru un contrast subtil */
+    padding: 12px; 
+    text-align: center; 
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); /* Umbră subtilă */
+    transition: background-color 0.3s, transform 0.3s; /* Tranziție pentru hover */
+">9 Baza</td>
+            <td>1,000,000</td>
+            <td>1,000,000</td>
+            <td>0</td>
+            <td>1,000,000</td>
+            <td>0</td>
+        </tr>
+        <tr>
+            <!-- <td><input type="checkbox"></td> -->
+            <td style="
+    font-weight: bold; 
+    color: #ffffff; /* Culoare albă pentru text */
+    background-color: #007acc; /* Albastru închis, elegant */
+    border: 1px solid #005f99; /* Bordură mai închisă pentru un contrast subtil */
+    padding: 12px; 
+    text-align: center; 
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); /* Umbră subtilă */
+    transition: background-color 0.3s, transform 0.3s; /* Tranziție pentru hover */
+">9 TVA</td>
+            <td >190,000</td>
+            <td>190,000</td>
+            <td>0</td>
+            <td>190,000</td>
+            <td>0</td>
+        </tr>
+        <tr>
+            <!-- <td><input type="checkbox"></td> -->
+            <td style="
+    font-weight: bold; 
+    color: #ffffff; /* Culoare albă pentru text */
+    background-color: #007acc; /* Albastru închis, elegant */
+    border: 1px solid #005f99; /* Bordură mai închisă pentru un contrast subtil */
+    padding: 12px; 
+    text-align: center; 
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); /* Umbră subtilă */
+    transition: background-color 0.3s, transform 0.3s; /* Tranziție pentru hover */
+">10 Baza</td>
+            <td >25,000</td>
+            <td>25,000</td>
+            <td>0</td>
+            <td>25,000</td>
+            <td>0</td>
+        </tr>
+        <tr>
+            <!-- <td><input type="checkbox"></td> -->
+            <td style="
+    font-weight: bold; 
+    color: #ffffff; /* Culoare albă pentru text */
+    background-color: #007acc; /* Albastru închis, elegant */
+    border: 1px solid #005f99; /* Bordură mai închisă pentru un contrast subtil */
+    padding: 12px; 
+    text-align: center; 
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); /* Umbră subtilă */
+    transition: background-color 0.3s, transform 0.3s; /* Tranziție pentru hover */
+">10 TVA</td>
+            <td >2,288</td>
+            <td>2,288</td>
+            <td>0</td>
+            <td>2,288</td>
+            <td>0</td>
+        </tr>
+        <tr>
+            <!-- <td><input type="checkbox"></td> -->
+            <td style="
+    font-weight: bold; 
+    color: #ffffff; /* Culoare albă pentru text */
+    background-color: #007acc; /* Albastru închis, elegant */
+    border: 1px solid #005f99; /* Bordură mai închisă pentru un contrast subtil */
+    padding: 12px; 
+    text-align: center; 
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); /* Umbră subtilă */
+    transition: background-color 0.3s, transform 0.3s; /* Tranziție pentru hover */
+">11 Baza</td>
+            <td >750</td>
+            <td>750</td>
+            <td>0</td>
+            <td>750</td>
+            <td>0</td>
+        </tr>
+        <tr>
+            <!-- <td><input type="checkbox"></td> -->
+            <td style="
+    font-weight: bold; 
+    color: #ffffff; /* Culoare albă pentru text */
+    background-color: #007acc; /* Albastru închis, elegant */
+    border: 1px solid #005f99; /* Bordură mai închisă pentru un contrast subtil */
+    padding: 12px; 
+    text-align: center; 
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); /* Umbră subtilă */
+    transition: background-color 0.3s, transform 0.3s; /* Tranziție pentru hover */
+">11 TVA</td>
+            <td >37</td>
+            <td>37</td>
+            <td>0</td>
+            <td>37</td>
+            <td>0</td>
+        </tr>
+        <tr>
+            <!-- <td><input type="checkbox"></td> -->
+            <td style="
+    font-weight: bold; 
+    color: #ffffff; /* Culoare albă pentru text */
+    background-color: #007acc; /* Albastru închis, elegant */
+    border: 1px solid #005f99; /* Bordură mai închisă pentru un contrast subtil */
+    padding: 12px; 
+    text-align: center; 
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); /* Umbră subtilă */
+    transition: background-color 0.3s, transform 0.3s; /* Tranziție pentru hover */
+">12 Baza</td>
+            <td >0</td>
+            <td>0</td>
+            <td>0</td>
+            <td>0</td>
+            <td>0</td>
+        </tr>
+        <tr>
+            <!-- <td><input type="checkbox"></td> -->
+            <td style="
+    font-weight: bold; 
+    color: #ffffff; /* Culoare albă pentru text */
+    background-color: #007acc; /* Albastru închis, elegant */
+    border: 1px solid #005f99; /* Bordură mai închisă pentru un contrast subtil */
+    padding: 12px; 
+    text-align: center; 
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); /* Umbră subtilă */
+    transition: background-color 0.3s, transform 0.3s; /* Tranziție pentru hover */
+">13 Baza</td>
+            <td >0</td>
+            <td>0</td>
+            <td>0</td>
+            <td>0</td>
+            <td>0</td>
+        </tr>
+        <tr>
+            <!-- <td><input type="checkbox"></td> -->
+            <td style="
+    font-weight: bold; 
+    color: #ffffff; /* Culoare albă pentru text */
+    background-color: #007acc; /* Albastru închis, elegant */
+    border: 1px solid #005f99; /* Bordură mai închisă pentru un contrast subtil */
+    padding: 12px; 
+    text-align: center; 
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); /* Umbră subtilă */
+    transition: background-color 0.3s, transform 0.3s; /* Tranziție pentru hover */
+">14 Baza</td>
+            <td >0</td>
+            <td>0</td>
+            <td>0</td>
+            <td>0</td>
+            <td>0</td>
+        </tr>
+        <tr>
+            <!-- <td><input type="checkbox"></td> -->
+            <td style="
+    font-weight: bold; 
+    color: #ffffff; /* Culoare albă pentru text */
+    background-color: #007acc; /* Albastru închis, elegant */
+    border: 1px solid #005f99; /* Bordură mai închisă pentru un contrast subtil */
+    padding: 12px; 
+    text-align: center; 
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); /* Umbră subtilă */
+    transition: background-color 0.3s, transform 0.3s; /* Tranziție pentru hover */
+">24 Baza</td>
+            <td >780,340</td>
+            <td>775,340</td>
+            <td>0</td>
+            <td>775,340</td>
+            <td>0</td>
+        </tr>
+        <tr>
+            <!-- <td><input type="checkbox"></td> -->
+            <td style="
+    font-weight: bold; 
+    color: #ffffff; /* Culoare albă pentru text */
+    background-color: #007acc; /* Albastru închis, elegant */
+    border: 1px solid #005f99; /* Bordură mai închisă pentru un contrast subtil */
+    padding: 12px; 
+    text-align: center; 
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); /* Umbră subtilă */
+    transition: background-color 0.3s, transform 0.3s; /* Tranziție pentru hover */
+">24 TVA</td>
+            <td >148,265</td>
+            <td>147,315</td>
+            <td>0</td>
+            <td>147,315</td>
+            <td>0</td>
+        </tr>
+        <tr>
+            <!-- <td><input type="checkbox"></td> -->
+            <td style="
+    font-weight: bold; 
+    color: #ffffff; /* Culoare albă pentru text */
+    background-color: #007acc; /* Albastru închis, elegant */
+    border: 1px solid #005f99; /* Bordură mai închisă pentru un contrast subtil */
+    padding: 12px; 
+    text-align: center; 
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); /* Umbră subtilă */
+    transition: background-color 0.3s, transform 0.3s; /* Tranziție pentru hover */
+">25 Baza</td>
+            <td >54,860</td>
+            <td>54,860</td>
+            <td>0</td>
+            <td>54,860</td>
+            <td>0</td>
+        </tr>
+        <tr>
+            <!-- <td><input type="checkbox"></td> -->
+            <td style="
+    font-weight: bold; 
+    color: #ffffff; /* Culoare albă pentru text */
+    background-color: #007acc; /* Albastru închis, elegant */
+    border: 1px solid #005f99; /* Bordură mai închisă pentru un contrast subtil */
+    padding: 12px; 
+    text-align: center; 
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); /* Umbră subtilă */
+    transition: background-color 0.3s, transform 0.3s; /* Tranziție pentru hover */
+">25 TVA</td>
+            <td >4,937</td>
+            <td>4,937</td>
+            <td>0</td>
+            <td>4,937</td>
+            <td>0</td>
+        </tr>
+        <tr>
+            <!-- <td><input type="checkbox"></td> -->
+            <td style="
+    font-weight: bold; 
+    color: #ffffff; /* Culoare albă pentru text */
+    background-color: #007acc; /* Albastru închis, elegant */
+    border: 1px solid #005f99; /* Bordură mai închisă pentru un contrast subtil */
+    padding: 12px; 
+    text-align: center; 
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); /* Umbră subtilă */
+    transition: background-color 0.3s, transform 0.3s; /* Tranziție pentru hover */
+">26 Baza</td>
+            <td >510</td>
+            <td>510</td>
+            <td>0</td>
+            <td>510</td>
+            <td>0</td>
+        </tr>
+        <tr>
+            <!-- <td><input type="checkbox"></td> -->
+            <td style="
+    font-weight: bold; 
+    color: #ffffff; /* Culoare albă pentru text */
+    background-color: #007acc; /* Albastru închis, elegant */
+    border: 1px solid #005f99; /* Bordură mai închisă pentru un contrast subtil */
+    padding: 12px; 
+    text-align: center; 
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); /* Umbră subtilă */
+    transition: background-color 0.3s, transform 0.3s; /* Tranziție pentru hover */
+">26 TVA</td>
+            <td >26</td>
+            <td>26</td>
+            <td>0</td>
+            <td>26</td>
+            <td>0</td>
+        </tr>
+        <tr>
+            <!-- <td><input type="checkbox"></td> -->
+            <td style="
+    font-weight: bold; 
+    color: #ffffff; /* Culoare albă pentru text */
+    background-color: #007acc; /* Albastru închis, elegant */
+    border: 1px solid #005f99; /* Bordură mai închisă pentru un contrast subtil */
+    padding: 12px; 
+    text-align: center; 
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); /* Umbră subtilă */
+    transition: background-color 0.3s, transform 0.3s; /* Tranziție pentru hover */
+">30 Baza</td>
+            <td >0</td>
+            <td>0</td>
+            <td>0</td>
+            <td>0</td>
+            <td>0</td>
+        </tr>
+
+        <!-- Continuă cu restul rândurilor din tabel -->
+    </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Tab 2 -->
+            <div id="tab2" class="tab-content" style="display:none;">
+               <div class="export-section">
+    <button id="export-csv-2" class="export-btn">
+        <i class="fas fa-file-csv export-icon"></i>Export CSV
+    </button>
+    <button id="export-excel-2" class="export-btn">
+        <i class="fas fa-file-excel export-icon"></i>Export Excel
+    </button>
+</div>
+
+
+                <!-- Tabel 2 -->
+                <div class="data-table-wrapper">
+                    <table id="data-table-2" class="styled-table">
+                             <thead>
+                 <!--     <tr style='background-color: transparent;'>
+            <th style="text-align: center; vertical-align: center; padding-left: 30px;"></th>
+            <th class="header-sursa" colspan="1">Sursa</th> 
+            <th class="header-anaf" colspan="3" >ANAF Decont precompletat</th> 
+            <th class="header-decont" colspan="3" >Decont Upload</th>
+            <th class="header-dif" colspan="3" >Dif</th> 
+        </tr> -->
+            <tr style='background-color: transparent;border-top: :0px'>
+              <!--   <th style="text-align: center; vertical-align: center; padding-left: 30px;"><input type="checkbox" id="select-all"></th> -->
+                <th>Rand</th>
+                <th>D300 decont</th>
+                <th>D390 decont</th>
+                <th>D394 decont</th>
+                <th>D300 declaratii</th>
+                <th>D390 declaratii</th>
+                <th>D394 declaratii</th>
+            </tr>
+        </thead>
+                        <tbody>
+                          <tr>
+                <!-- <td><input type="checkbox"></td> -->
+                <td style="
+    font-weight: bold; 
+    color: #ffffff; /* Culoare albă pentru text */
+    background-color: #007acc; /* Albastru închis, elegant */
+    border: 1px solid #005f99; /* Bordură mai închisă pentru un contrast subtil */
+    padding: 12px; 
+    text-align: center; 
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); /* Umbră subtilă */
+    transition: background-color 0.3s, transform 0.3s; /* Tranziție pentru hover */
+">1 Baza</td>
+                <td>25,000</td>
+                <td>25,000</td>
+                <td>0</td>
+                <td>0</td>
+                <td>0</td>
+                <td>0</td>
+            </tr>
+            <tr>
+                <!-- <td><input type="checkbox"></td> -->
+                <td style="
+    font-weight: bold; 
+    color: #ffffff; /* Culoare albă pentru text */
+    background-color: #007acc; /* Albastru închis, elegant */
+    border: 1px solid #005f99; /* Bordură mai închisă pentru un contrast subtil */
+    padding: 12px; 
+    text-align: center; 
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); /* Umbră subtilă */
+    transition: background-color 0.3s, transform 0.3s; /* Tranziție pentru hover */
+">2 Baza</td>
+                <td >0</td>
+                <td>0</td>
+                <td>0</td>
+                <td>0</td>
+                <td>0</td>
+                <td>0</td>
+            </tr>
+            <tr>
+                <!-- <td><input type="checkbox"></td> -->
+                <td style="
+    font-weight: bold; 
+    color: #ffffff; /* Culoare albă pentru text */
+    background-color: #007acc; /* Albastru închis, elegant */
+    border: 1px solid #005f99; /* Bordură mai închisă pentru un contrast subtil */
+    padding: 12px; 
+    text-align: center; 
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); /* Umbră subtilă */
+    transition: background-color 0.3s, transform 0.3s; /* Tranziție pentru hover */
+">3 Baza</td>
+                <td>0</td>
+                <td>0</td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+
+            </tr>
+            <tr>
+                <!-- <td><input type="checkbox"></td> -->
+                <td style="
+    font-weight: bold; 
+    color: #ffffff; /* Culoare albă pentru text */
+    background-color: #007acc; /* Albastru închis, elegant */
+    border: 1px solid #005f99; /* Bordură mai închisă pentru un contrast subtil */
+    padding: 12px; 
+    text-align: center; 
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); /* Umbră subtilă */
+    transition: background-color 0.3s, transform 0.3s; /* Tranziție pentru hover */
+">4 Baza</td>
+                <td>0</td>
+                <td>0</td>
+                <td>0</td>
+                <td>0</td>
+                <td>0</td>
+                <td>0</td>
+
+            </tr>
+            <tr>
+                <!-- <td><input type="checkbox"></td> -->
+                <td style="
+    font-weight: bold; 
+    color: #ffffff; /* Culoare albă pentru text */
+    background-color: #007acc; /* Albastru închis, elegant */
+    border: 1px solid #005f99; /* Bordură mai închisă pentru un contrast subtil */
+    padding: 12px; 
+    text-align: center; 
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); /* Umbră subtilă */
+    transition: background-color 0.3s, transform 0.3s; /* Tranziție pentru hover */
+">5 Baza</td>
+                <td>0</td>
+                <td>0</td>
+                <td>0</td>
+                <td>0</td>
+                <td>0</td>
+                <td>0</td>
+
+            </tr>
+            <!-- Continuăm cu celelalte rânduri din tabel -->
+            <tr>
+                <!-- <td><input type="checkbox"></td> -->
+                <td style="
+    font-weight: bold; 
+    color: #ffffff; /* Culoare albă pentru text */
+    background-color: #007acc; /* Albastru închis, elegant */
+    border: 1px solid #005f99; /* Bordură mai închisă pentru un contrast subtil */
+    padding: 12px; 
+    text-align: center; 
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); /* Umbră subtilă */
+    transition: background-color 0.3s, transform 0.3s; /* Tranziție pentru hover */
+">5 TVA</td>
+                <td>0</td>
+                <td>0</td>
+                <td>0</td>
+                <td>0</td>
+                <td>0</td>
+                <td>0</td>
+            </tr>
+            <tr>
+                <!-- <td><input type="checkbox"></td> -->
+                <td style="
+    font-weight: bold; 
+    color: #ffffff; /* Culoare albă pentru text */
+    background-color: #007acc; /* Albastru închis, elegant */
+    border: 1px solid #005f99; /* Bordură mai închisă pentru un contrast subtil */
+    padding: 12px; 
+    text-align: center; 
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); /* Umbră subtilă */
+    transition: background-color 0.3s, transform 0.3s; /* Tranziție pentru hover */
+">6 Baza</td>
+                <td>0</td>
+                <td>0</td>
+                <td>0</td>
+                <td>0</td>
+                <td>0</td>
+                <td>0</td>
+            </tr>
+            <tr>
+                <!-- <td><input type="checkbox"></td> -->
+                <td style="
+    font-weight: bold; 
+    color: #ffffff; /* Culoare albă pentru text */
+    background-color: #007acc; /* Albastru închis, elegant */
+    border: 1px solid #005f99; /* Bordură mai închisă pentru un contrast subtil */
+    padding: 12px; 
+    text-align: center; 
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); /* Umbră subtilă */
+    transition: background-color 0.3s, transform 0.3s; /* Tranziție pentru hover */
+">6 TVA</td>
+                <td>0</td>
+                <td>0</td>
+                <td>0</td>
+                <td>0</td>
+                <td>0</td>
+                <td>0</td>
+            </tr>
+            <tr></tr>
+                <!-- <td><input type="checkbox"></td> -->
+                <td style="
+    font-weight: bold; 
+    color: #ffffff; /* Culoare albă pentru text */
+    background-color: #007acc; /* Albastru închis, elegant */
+    border: 1px solid #005f99; /* Bordură mai închisă pentru un contrast subtil */
+    padding: 12px; 
+    text-align: center; 
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); /* Umbră subtilă */
+    transition: background-color 0.3s, transform 0.3s; /* Tranziție pentru hover */
+">7 Baza</td>
+                <td>467,512</td>
+                <td>467,512</td>
+                <td>0</td>
+                <td>0</td>
+                <td>0</td>
+                <td>0</td>
+            </tr>            
+            <tr></tr>
+            <!-- <td><input type="checkbox"></td> -->
+            <td style="
+font-weight: bold; 
+color: #ffffff; /* Culoare albă pentru text */
+background-color: #007acc; /* Albastru închis, elegant */
+border: 1px solid #005f99; /* Bordură mai închisă pentru un contrast subtil */
+padding: 12px; 
+text-align: center; 
+box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); /* Umbră subtilă */
+transition: background-color 0.3s, transform 0.3s; /* Tranziție pentru hover */
+">7 TVA</td>
+            <td>0</td>
+            <td>0</td>
+            <td>0</td>
+            <td>0</td>
+            <td>0</td>
+            <td>0</td>
+        </tr> 
+        <tr>
+            <!-- <td><input type="checkbox"></td> -->
+            <td style="
+font-weight: bold; 
+color: #ffffff; /* Culoare albă pentru text */
+background-color: #007acc; /* Albastru închis, elegant */
+border: 1px solid #005f99; /* Bordură mai închisă pentru un contrast subtil */
+padding: 12px; 
+text-align: center; 
+box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); /* Umbră subtilă */
+transition: background-color 0.3s, transform 0.3s; /* Tranziție pentru hover */
+">7.1 Baza</td>
+            <td>0</td>
+            <td>0</td>
+            <td>0</td>
+            <td>0</td>
+            <td>0</td>
+            <td>0</td>
+        </tr>
+        <tr>
+            <!-- <td><input type="checkbox"></td> -->
+            <td style="
+font-weight: bold; 
+color: #ffffff; /* Culoare albă pentru text */
+background-color: #007acc; /* Albastru închis, elegant */
+border: 1px solid #005f99; /* Bordură mai închisă pentru un contrast subtil */
+padding: 12px; 
+text-align: center; 
+box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); /* Umbră subtilă */
+transition: background-color 0.3s, transform 0.3s; /* Tranziție pentru hover */
+">7.1 TVA</td>
+            <td>0</td>
+            <td>0</td>
+            <td>0</td>
+            <td>0</td>
+            <td>0</td>
+            <td>0</td>
+        </tr> 
+        <tr>
+            <!-- <td><input type="checkbox"></td> -->
+            <td style="
+font-weight: bold; 
+color: #ffffff; /* Culoare albă pentru text */
+background-color: #007acc; /* Albastru închis, elegant */
+border: 1px solid #005f99; /* Bordură mai închisă pentru un contrast subtil */
+padding: 12px; 
+text-align: center; 
+box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); /* Umbră subtilă */
+transition: background-color 0.3s, transform 0.3s; /* Tranziție pentru hover */
+">8 Baza</td>
+            <td>0</td>
+            <td>0</td>
+            <td>0</td>
+            <td>0</td>
+            <td>0</td>
+            <td>0</td>
+        </tr>
+        <tr>
+            <!-- <td><input type="checkbox"></td> -->
+            <td style="
+font-weight: bold; 
+color: #ffffff; /* Culoare albă pentru text */
+background-color: #007acc; /* Albastru închis, elegant */
+border: 1px solid #005f99; /* Bordură mai închisă pentru un contrast subtil */
+padding: 12px; 
+text-align: center; 
+box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); /* Umbră subtilă */
+transition: background-color 0.3s, transform 0.3s; /* Tranziție pentru hover */
+">8 TVA</td>
+            <td>0</td>
+            <td>0</td>
+            <td>0</td>
+            <td>0</td>
+            <td>0</td>
+            <td>0</td>
+        </tr>   
+        <tr>
+            <!-- <td><input type="checkbox"></td> -->
+            <td style="
+font-weight: bold; 
+color: #ffffff; /* Culoare albă pentru text */
+background-color: #007acc; /* Albastru închis, elegant */
+border: 1px solid #005f99; /* Bordură mai închisă pentru un contrast subtil */
+padding: 12px; 
+text-align: center; 
+box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); /* Umbră subtilă */
+transition: background-color 0.3s, transform 0.3s; /* Tranziție pentru hover */
+">9 Baza</td>
+            <td>1,000,000</td>
+            <td>0</td>
+            <td>1,000,000</td>
+            <td>0</td>
+            <td>0</td>
+            <td>0</td>
+        </tr>
+        <tr>
+            <!-- <td><input type="checkbox"></td> -->
+            <td style="
+font-weight: bold; 
+color: #ffffff; /* Culoare albă pentru text */
+background-color: #007acc; /* Albastru închis, elegant */
+border: 1px solid #005f99; /* Bordură mai închisă pentru un contrast subtil */
+padding: 12px; 
+text-align: center; 
+box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); /* Umbră subtilă */
+transition: background-color 0.3s, transform 0.3s; /* Tranziție pentru hover */
+">9 TVA</td>
+            <td>190,000</td>
+            <td>0</td>
+            <td>190,000</td>
+            <td>0</td>
+            <td>0</td>
+            <td>0</td>
+        </tr>
+        <tr>
+            <!-- <td><input type="checkbox"></td> -->
+            <td style="
+font-weight: bold; 
+color: #ffffff; /* Culoare albă pentru text */
+background-color: #007acc; /* Albastru închis, elegant */
+border: 1px solid #005f99; /* Bordură mai închisă pentru un contrast subtil */
+padding: 12px; 
+text-align: center; 
+box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); /* Umbră subtilă */
+transition: background-color 0.3s, transform 0.3s; /* Tranziție pentru hover */
+">10 Baza</td>
+            <td>25,000</td>
+            <td>0</td>
+            <td>25,000</td>
+            <td>0</td>
+            <td>0</td>
+            <td>0</td>
+        </tr>
+        <tr>
+            <!-- <td><input type="checkbox"></td> -->
+            <td style="
+font-weight: bold; 
+color: #ffffff; /* Culoare albă pentru text */
+background-color: #007acc; /* Albastru închis, elegant */
+border: 1px solid #005f99; /* Bordură mai închisă pentru un contrast subtil */
+padding: 12px; 
+text-align: center; 
+box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); /* Umbră subtilă */
+transition: background-color 0.3s, transform 0.3s; /* Tranziție pentru hover */
+">10 TVA</td>
+            <td>2,288</td>
+            <td>0</td>
+            <td>2,288</td>
+            <td>0</td>
+            <td>0</td>
+            <td>0</td>
+        </tr>
+        <tr>
+            <!-- <td><input type="checkbox"></td> -->
+            <td style="
+font-weight: bold; 
+color: #ffffff; /* Culoare albă pentru text */
+background-color: #007acc; /* Albastru închis, elegant */
+border: 1px solid #005f99; /* Bordură mai închisă pentru un contrast subtil */
+padding: 12px; 
+text-align: center; 
+box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); /* Umbră subtilă */
+transition: background-color 0.3s, transform 0.3s; /* Tranziție pentru hover */
+">11 Baza</td>
+            <td>750</td>
+            <td>0</td>
+            <td>750</td>
+            <td>0</td>
+            <td>0</td>
+            <td>0</td>
+        </tr>
+        <tr>
+            <!-- <td><input type="checkbox"></td> -->
+            <td style="
+font-weight: bold; 
+color: #ffffff; /* Culoare albă pentru text */
+background-color: #007acc; /* Albastru închis, elegant */
+border: 1px solid #005f99; /* Bordură mai închisă pentru un contrast subtil */
+padding: 12px; 
+text-align: center; 
+box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); /* Umbră subtilă */
+transition: background-color 0.3s, transform 0.3s; /* Tranziție pentru hover */
+">11 TVA</td>
+            <td>750</td>
+            <td>0</td>
+            <td>750</td>
+            <td>0</td>
+            <td>0</td>
+            <td>0</td>
+        </tr>
+        <tr>
+            <!-- <td><input type="checkbox"></td> -->
+            <td style="
+font-weight: bold; 
+color: #ffffff; /* Culoare albă pentru text */
+background-color: #007acc; /* Albastru închis, elegant */
+border: 1px solid #005f99; /* Bordură mai închisă pentru un contrast subtil */
+padding: 12px; 
+text-align: center; 
+box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); /* Umbră subtilă */
+transition: background-color 0.3s, transform 0.3s; /* Tranziție pentru hover */
+">12 Baza</td>
+            <td>0</td>
+            <td>0</td>
+            <td>0</td>
+            <td>0</td>
+            <td>0</td>
+            <td>0</td>
+        </tr>
+        <tr>
+            <!-- <td><input type="checkbox"></td> -->
+            <td style="
+font-weight: bold; 
+color: #ffffff; /* Culoare albă pentru text */
+background-color: #007acc; /* Albastru închis, elegant */
+border: 1px solid #005f99; /* Bordură mai închisă pentru un contrast subtil */
+padding: 12px; 
+text-align: center; 
+box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); /* Umbră subtilă */
+transition: background-color 0.3s, transform 0.3s; /* Tranziție pentru hover */
+">12 TVA</td>
+            <td>0</td>
+            <td>0</td>
+            <td>0</td>
+            <td>0</td>
+            <td>0</td>
+            <td>0</td>
+        </tr>
+        <tr>
+            <!-- <td><input type="checkbox"></td> -->
+            <td style="
+font-weight: bold; 
+color: #ffffff; /* Culoare albă pentru text */
+background-color: #007acc; /* Albastru închis, elegant */
+border: 1px solid #005f99; /* Bordură mai închisă pentru un contrast subtil */
+padding: 12px; 
+text-align: center; 
+box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); /* Umbră subtilă */
+transition: background-color 0.3s, transform 0.3s; /* Tranziție pentru hover */
+">12.1 Baza</td>
+            <td>0</td>
+            <td>0</td>
+            <td>0</td>
+            <td>0</td>
+            <td>0</td>
+            <td>0</td>
+        </tr>
+        <tr>
+            <!-- <td><input type="checkbox"></td> -->
+            <td style="
+font-weight: bold; 
+color: #ffffff; /* Culoare albă pentru text */
+background-color: #007acc; /* Albastru închis, elegant */
+border: 1px solid #005f99; /* Bordură mai închisă pentru un contrast subtil */
+padding: 12px; 
+text-align: center; 
+box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); /* Umbră subtilă */
+transition: background-color 0.3s, transform 0.3s; /* Tranziție pentru hover */
+">12.1 TVA</td>
+            <td>0</td>
+            <td>0</td>
+            <td>0</td>
+            <td>0</td>
+            <td>0</td>
+            <td>0</td>
+        </tr>
+        <tr>
+            <!-- <td><input type="checkbox"></td> -->
+            <td style="
+font-weight: bold; 
+color: #ffffff; /* Culoare albă pentru text */
+background-color: #007acc; /* Albastru închis, elegant */
+border: 1px solid #005f99; /* Bordură mai închisă pentru un contrast subtil */
+padding: 12px; 
+text-align: center; 
+box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); /* Umbră subtilă */
+transition: background-color 0.3s, transform 0.3s; /* Tranziție pentru hover */
+">12.2 Baza</td>
+            <td>0</td>
+            <td>0</td>
+            <td>0</td>
+            <td>0</td>
+            <td>0</td>
+            <td>0</td>
+        </tr>
+        <tr>
+            <!-- <td><input type="checkbox"></td> -->
+            <td style="
+font-weight: bold; 
+color: #ffffff; /* Culoare albă pentru text */
+background-color: #007acc; /* Albastru închis, elegant */
+border: 1px solid #005f99; /* Bordură mai închisă pentru un contrast subtil */
+padding: 12px; 
+text-align: center; 
+box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); /* Umbră subtilă */
+transition: background-color 0.3s, transform 0.3s; /* Tranziție pentru hover */
+">12.2 TVA</td>
+            <td>0</td>
+            <td>0</td>
+            <td>0</td>
+            <td>0</td>
+            <td>0</td>
+            <td>0</td>
+        </tr>
+        <tr>
+            <!-- <td><input type="checkbox"></td> -->
+            <td style="
+font-weight: bold; 
+color: #ffffff; /* Culoare albă pentru text */
+background-color: #007acc; /* Albastru închis, elegant */
+border: 1px solid #005f99; /* Bordură mai închisă pentru un contrast subtil */
+padding: 12px; 
+text-align: center; 
+box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); /* Umbră subtilă */
+transition: background-color 0.3s, transform 0.3s; /* Tranziție pentru hover */
+">12.3 Baza</td>
+            <td>0</td>
+            <td>0</td>
+            <td>0</td>
+            <td>0</td>
+            <td>0</td>
+            <td>0</td>
+        </tr>
+        <tr>
+            <!-- <td><input type="checkbox"></td> -->
+            <td style="
+font-weight: bold; 
+color: #ffffff; /* Culoare albă pentru text */
+background-color: #007acc; /* Albastru închis, elegant */
+border: 1px solid #005f99; /* Bordură mai închisă pentru un contrast subtil */
+padding: 12px; 
+text-align: center; 
+box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); /* Umbră subtilă */
+transition: background-color 0.3s, transform 0.3s; /* Tranziție pentru hover */
+">12.3 TVA</td>
+            <td>0</td>
+            <td>0</td>
+            <td>0</td>
+            <td>0</td>
+            <td>0</td>
+            <td>0</td>
+        </tr>
+        <tr>
+            <!-- <td><input type="checkbox"></td> -->
+            <td style="
+font-weight: bold; 
+color: #ffffff; /* Culoare albă pentru text */
+background-color: #007acc; /* Albastru închis, elegant */
+border: 1px solid #005f99; /* Bordură mai închisă pentru un contrast subtil */
+padding: 12px; 
+text-align: center; 
+box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); /* Umbră subtilă */
+transition: background-color 0.3s, transform 0.3s; /* Tranziție pentru hover */
+">13 Baza</td>
+            <td>0</td>
+            <td>0</td>
+            <td>0</td>
+            <td>0</td>
+            <td>0</td>
+            <td>0</td>
+        </tr>
+        <tr>
+            <!-- <td><input type="checkbox"></td> -->
+            <td style="
+font-weight: bold; 
+color: #ffffff; /* Culoare albă pentru text */
+background-color: #007acc; /* Albastru închis, elegant */
+border: 1px solid #005f99; /* Bordură mai închisă pentru un contrast subtil */
+padding: 12px; 
+text-align: center; 
+box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); /* Umbră subtilă */
+transition: background-color 0.3s, transform 0.3s; /* Tranziție pentru hover */
+">13 TVA</td>
+            <td>0</td>
+            <td>0</td>
+            <td>0</td>
+            <td>0</td>
+            <td>0</td>
+            <td>0</td>
+        </tr> 
+        <tr>
+            <!-- <td><input type="checkbox"></td> -->
+            <td style="
+font-weight: bold; 
+color: #ffffff; /* Culoare albă pentru text */
+background-color: #007acc; /* Albastru închis, elegant */
+border: 1px solid #005f99; /* Bordură mai închisă pentru un contrast subtil */
+padding: 12px; 
+text-align: center; 
+box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); /* Umbră subtilă */
+transition: background-color 0.3s, transform 0.3s; /* Tranziție pentru hover */
+">14_15 Baza</td>
+            <td>0</td>
+            <td>0</td>
+            <td>0</td>
+            <td>0</td>
+            <td>0</td>
+            <td>0</td>
+        </tr>
+        <tr>
+            <!-- <td><input type="checkbox"></td> -->
+            <td style="
+font-weight: bold; 
+color: #ffffff; /* Culoare albă pentru text */
+background-color: #007acc; /* Albastru închis, elegant */
+border: 1px solid #005f99; /* Bordură mai închisă pentru un contrast subtil */
+padding: 12px; 
+text-align: center; 
+box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); /* Umbră subtilă */
+transition: background-color 0.3s, transform 0.3s; /* Tranziție pentru hover */
+">14_15 TVA</td>
+            <td>0</td>
+            <td>0</td>
+            <td>0</td>
+            <td>0</td>
+            <td>0</td>
+            <td>0</td>
+        </tr>
+        <tr>
+            <!-- <td><input type="checkbox"></td> -->
+            <td style="
+font-weight: bold; 
+color: #ffffff; /* Culoare albă pentru text */
+background-color: #007acc; /* Albastru închis, elegant */
+border: 1px solid #005f99; /* Bordură mai închisă pentru un contrast subtil */
+padding: 12px; 
+text-align: center; 
+box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); /* Umbră subtilă */
+transition: background-color 0.3s, transform 0.3s; /* Tranziție pentru hover */
+">20 Baza</td>
+            <td>584,933</td>
+            <td>0</td>
+            <td>0</td>
+            <td>0</td>
+            <td>0</td>
+            <td>0</td>
+        </tr>
+        <tr>
+            <!-- <td><input type="checkbox"></td> -->
+            <td style="
+font-weight: bold; 
+color: #ffffff; /* Culoare albă pentru text */
+background-color: #007acc; /* Albastru închis, elegant */
+border: 1px solid #005f99; /* Bordură mai închisă pentru un contrast subtil */
+padding: 12px; 
+text-align: center; 
+box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); /* Umbră subtilă */
+transition: background-color 0.3s, transform 0.3s; /* Tranziție pentru hover */
+">20 TVA</td>
+            <td>0</td>
+            <td>0</td>
+            <td>0</td>
+            <td>0</td>
+            <td>0</td>
+            <td>0</td>
+        </tr>
+        <tr>
+            <!-- <td><input type="checkbox"></td> -->
+            <td style="
+font-weight: bold; 
+color: #ffffff; /* Culoare albă pentru text */
+background-color: #007acc; /* Albastru închis, elegant */
+border: 1px solid #005f99; /* Bordură mai închisă pentru un contrast subtil */
+padding: 12px; 
+text-align: center; 
+box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); /* Umbră subtilă */
+transition: background-color 0.3s, transform 0.3s; /* Tranziție pentru hover */
+">20 Baza</td>
+            <td>0</td>
+            <td>0</td>
+            <td>0</td>
+            <td>0</td>
+            <td>0</td>
+            <td>0</td>
+        </tr>
+        <tr>
+            <!-- <td><input type="checkbox"></td> -->
+            <td style="
+font-weight: bold; 
+color: #ffffff; /* Culoare albă pentru text */
+background-color: #007acc; /* Albastru închis, elegant */
+border: 1px solid #005f99; /* Bordură mai închisă pentru un contrast subtil */
+padding: 12px; 
+text-align: center; 
+box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); /* Umbră subtilă */
+transition: background-color 0.3s, transform 0.3s; /* Tranziție pentru hover */
+">20.1 TVA</td>
+            <td>0</td>
+            <td>0</td>
+            <td>0</td>
+            <td>0</td>
+            <td>0</td>
+            <td>0</td>
+        </tr>
+        <tr>
+            <!-- <td><input type="checkbox"></td> -->
+            <td style="
+font-weight: bold; 
+color: #ffffff; /* Culoare albă pentru text */
+background-color: #007acc; /* Albastru închis, elegant */
+border: 1px solid #005f99; /* Bordură mai închisă pentru un contrast subtil */
+padding: 12px; 
+text-align: center; 
+box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); /* Umbră subtilă */
+transition: background-color 0.3s, transform 0.3s; /* Tranziție pentru hover */
+">21 Baza</td>
+            <td>0</td>
+            <td>0</td>
+            <td>0</td>
+            <td>0</td>
+            <td>0</td>
+            <td>0</td>
+        </tr>
+        <tr>
+            <!-- <td><input type="checkbox"></td> -->
+            <td style="
+font-weight: bold; 
+color: #ffffff; /* Culoare albă pentru text */
+background-color: #007acc; /* Albastru închis, elegant */
+border: 1px solid #005f99; /* Bordură mai închisă pentru un contrast subtil */
+padding: 12px; 
+text-align: center; 
+box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); /* Umbră subtilă */
+transition: background-color 0.3s, transform 0.3s; /* Tranziție pentru hover */
+">21 TVA</td>
+            <td>0</td>
+            <td>0</td>
+            <td>0</td>
+            <td>0</td>
+            <td>0</td>
+            <td>0</td>
+        </tr>
+                <tr>
+            <!-- <td><input type="checkbox"></td> -->
+            <td style="
+font-weight: bold; 
+color: #ffffff; /* Culoare albă pentru text */
+background-color: #007acc; /* Albastru închis, elegant */
+border: 1px solid #005f99; /* Bordură mai închisă pentru un contrast subtil */
+padding: 12px; 
+text-align: center; 
+box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); /* Umbră subtilă */
+transition: background-color 0.3s, transform 0.3s; /* Tranziție pentru hover */
+">22 Baza</td>
+            <td>0</td>
+            <td>0</td>
+            <td>0</td>
+            <td>0</td>
+            <td>0</td>
+            <td>0</td>
+        </tr>
+        <tr>
+            <!-- <td><input type="checkbox"></td> -->
+            <td style="
+font-weight: bold; 
+color: #ffffff; /* Culoare albă pentru text */
+background-color: #007acc; /* Albastru închis, elegant */
+border: 1px solid #005f99; /* Bordură mai închisă pentru un contrast subtil */
+padding: 12px; 
+text-align: center; 
+box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); /* Umbră subtilă */
+transition: background-color 0.3s, transform 0.3s; /* Tranziție pentru hover */
+">22 TVA</td>
+            <td>0</td>
+            <td>0</td>
+            <td>0</td>
+            <td>0</td>
+            <td>0</td>
+            <td>0</td>
+        </tr>
+        <tr>
+            <!-- <td><input type="checkbox"></td> -->
+            <td style="
+font-weight: bold; 
+color: #ffffff; /* Culoare albă pentru text */
+background-color: #007acc; /* Albastru închis, elegant */
+border: 1px solid #005f99; /* Bordură mai închisă pentru un contrast subtil */
+padding: 12px; 
+text-align: center; 
+box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); /* Umbră subtilă */
+transition: background-color 0.3s, transform 0.3s; /* Tranziție pentru hover */
+">23 Baza</td>
+            <td>0</td>
+            <td>0</td>
+            <td>0</td>
+            <td>0</td>
+            <td>0</td>
+            <td>0</td>
+        </tr>
+        <tr>
+            <!-- <td><input type="checkbox"></td> -->
+            <td style="
+font-weight: bold; 
+color: #ffffff; /* Culoare albă pentru text */
+background-color: #007acc; /* Albastru închis, elegant */
+border: 1px solid #005f99; /* Bordură mai închisă pentru un contrast subtil */
+padding: 12px; 
+text-align: center; 
+box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); /* Umbră subtilă */
+transition: background-color 0.3s, transform 0.3s; /* Tranziție pentru hover */
+">23 TVA</td>
+            <td>0</td>
+            <td>0</td>
+            <td>0</td>
+            <td>0</td>
+            <td>0</td>
+            <td>0</td>
+        </tr>
+        <tr>
+            <!-- <td><input type="checkbox"></td> -->
+            <td style="
+font-weight: bold; 
+color: #ffffff; /* Culoare albă pentru text */
+background-color: #007acc; /* Albastru închis, elegant */
+border: 1px solid #005f99; /* Bordură mai închisă pentru un contrast subtil */
+padding: 12px; 
+text-align: center; 
+box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); /* Umbră subtilă */
+transition: background-color 0.3s, transform 0.3s; /* Tranziție pentru hover */
+">24 Baza</td>
+            <td>780,340</td>
+            <td>0</td>
+            <td>780,340</td>
+            <td>0</td>
+            <td>0</td>
+            <td>0</td>
+        </tr>
+        <tr>
+            <!-- <td><input type="checkbox"></td> -->
+            <td style="
+font-weight: bold; 
+color: #ffffff; /* Culoare albă pentru text */
+background-color: #007acc; /* Albastru închis, elegant */
+border: 1px solid #005f99; /* Bordură mai închisă pentru un contrast subtil */
+padding: 12px; 
+text-align: center; 
+box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); /* Umbră subtilă */
+transition: background-color 0.3s, transform 0.3s; /* Tranziție pentru hover */
+">24 TVA</td>
+            <td>148,265</td>
+            <td>0</td>
+            <td>148,265</td>
+            <td>0</td>
+            <td>0</td>
+            <td>0</td>
+        </tr>
+        <tr>
+            <!-- <td><input type="checkbox"></td> -->
+            <td style="
+font-weight: bold; 
+color: #ffffff; /* Culoare albă pentru text */
+background-color: #007acc; /* Albastru închis, elegant */
+border: 1px solid #005f99; /* Bordură mai închisă pentru un contrast subtil */
+padding: 12px; 
+text-align: center; 
+box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); /* Umbră subtilă */
+transition: background-color 0.3s, transform 0.3s; /* Tranziție pentru hover */
+">25 Baza</td>
+            <td>54,860</td>
+            <td>0</td>
+            <td>54,860</td>
+            <td>0</td>
+            <td>0</td>
+            <td>0</td>
+        </tr>
+        <tr>
+            <!-- <td><input type="checkbox"></td> -->
+            <td style="
+font-weight: bold; 
+color: #ffffff; /* Culoare albă pentru text */
+background-color: #007acc; /* Albastru închis, elegant */
+border: 1px solid #005f99; /* Bordură mai închisă pentru un contrast subtil */
+padding: 12px; 
+text-align: center; 
+box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); /* Umbră subtilă */
+transition: background-color 0.3s, transform 0.3s; /* Tranziție pentru hover */
+">25 TVA</td>
+            <td>4,937</td>
+            <td>0</td>
+            <td>4,937</td>
+            <td>0</td>
+            <td>0</td>
+            <td>0</td>
+        </tr>
+        <tr>
+            <!-- <td><input type="checkbox"></td> -->
+            <td style="
+font-weight: bold; 
+color: #ffffff; /* Culoare albă pentru text */
+background-color: #007acc; /* Albastru închis, elegant */
+border: 1px solid #005f99; /* Bordură mai închisă pentru un contrast subtil */
+padding: 12px; 
+text-align: center; 
+box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); /* Umbră subtilă */
+transition: background-color 0.3s, transform 0.3s; /* Tranziție pentru hover */
+">26 Baza</td>
+            <td>510</td>
+            <td>0</td>
+            <td>510</td>
+            <td>0</td>
+            <td>0</td>
+            <td>0</td>
+        </tr>
+        <tr>
+            <!-- <td><input type="checkbox"></td> -->
+            <td style="
+font-weight: bold; 
+color: #ffffff; /* Culoare albă pentru text */
+background-color: #007acc; /* Albastru închis, elegant */
+border: 1px solid #005f99; /* Bordură mai închisă pentru un contrast subtil */
+padding: 12px; 
+text-align: center; 
+box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); /* Umbră subtilă */
+transition: background-color 0.3s, transform 0.3s; /* Tranziție pentru hover */
+">26 TVA</td>
+            <td>26</td>
+            <td>0</td>
+            <td>25</td>
+            <td>0</td>
+            <td>0</td>
+            <td>0</td>
+        </tr>
+        <tr>
+            <!-- <td><input type="checkbox"></td> -->
+            <td style="
+font-weight: bold; 
+color: #ffffff; /* Culoare albă pentru text */
+background-color: #007acc; /* Albastru închis, elegant */
+border: 1px solid #005f99; /* Bordură mai închisă pentru un contrast subtil */
+padding: 12px; 
+text-align: center; 
+box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); /* Umbră subtilă */
+transition: background-color 0.3s, transform 0.3s; /* Tranziție pentru hover */
+">28 Baza</td>
+            <td>0</td>
+            <td>0</td>
+            <td>0</td>
+            <td>0</td>
+            <td>0</td>
+            <td>0</td>
+        </tr>
+        <tr>
+            <!-- <td><input type="checkbox"></td> -->
+            <td style="
+font-weight: bold; 
+color: #ffffff; /* Culoare albă pentru text */
+background-color: #007acc; /* Albastru închis, elegant */
+border: 1px solid #005f99; /* Bordură mai închisă pentru un contrast subtil */
+padding: 12px; 
+text-align: center; 
+box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); /* Umbră subtilă */
+transition: background-color 0.3s, transform 0.3s; /* Tranziție pentru hover */
+">28 TVA</td>
+            <td>0</td>
+            <td>0</td>
+            <td>0</td>
+            <td>0</td>
+            <td>0</td>
+            <td>0</td>
+        </tr>
+        <tr>
+            <!-- <td><input type="checkbox"></td> -->
+            <td style="
+font-weight: bold; 
+color: #ffffff; /* Culoare albă pentru text */
+background-color: #007acc; /* Albastru închis, elegant */
+border: 1px solid #005f99; /* Bordură mai închisă pentru un contrast subtil */
+padding: 12px; 
+text-align: center; 
+box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); /* Umbră subtilă */
+transition: background-color 0.3s, transform 0.3s; /* Tranziție pentru hover */
+">28 Baza</td>
+            <td>0</td>
+            <td>0</td>
+            <td>0</td>
+            <td>0</td>
+            <td>0</td>
+            <td>0</td>
+        </tr>
+        <tr>
+            <!-- <td><input type="checkbox"></td> -->
+            <td style="
+font-weight: bold; 
+color: #ffffff; /* Culoare albă pentru text */
+background-color: #007acc; /* Albastru închis, elegant */
+border: 1px solid #005f99; /* Bordură mai închisă pentru un contrast subtil */
+padding: 12px; 
+text-align: center; 
+box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); /* Umbră subtilă */
+transition: background-color 0.3s, transform 0.3s; /* Tranziție pentru hover */
+">28 TVA</td>
+            <td>0</td>
+            <td>0</td>
+            <td>0</td>
+            <td>0</td>
+            <td>0</td>
+            <td>0</td>
+        </tr>
+        <tr>
+            <!-- <td><input type="checkbox"></td> -->
+            <td style="
+font-weight: bold; 
+color: #ffffff; /* Culoare albă pentru text */
+background-color: #007acc; /* Albastru închis, elegant */
+border: 1px solid #005f99; /* Bordură mai închisă pentru un contrast subtil */
+padding: 12px; 
+text-align: center; 
+box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); /* Umbră subtilă */
+transition: background-color 0.3s, transform 0.3s; /* Tranziție pentru hover */
+">30 Baza</td>
+            <td>0</td>
+            <td>0</td>
+            <td>0</td>
+            <td>0</td>
+            <td>0</td>
+            <td>0</td>
+        </tr>
+
+        
+        
+        
+        
+                 
+                            <!-- Continuare rânduri -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            const appContainer = document.querySelector('.app-container');
+            sidebar.classList.toggle('hidden');
+            appContainer.classList.toggle('sidebar-hidden');
+        }
+
+        function openTab(evt, tabName) {
+            const tabs = document.querySelectorAll('.tab');
+            const tabContents = document.querySelectorAll('.tab-content');
+
+            tabs.forEach(tab => {
+                tab.classList.remove('active');
+            });
+
+            tabContents.forEach(content => {
+                content.style.display = 'none';
+            });
+
+            evt.currentTarget.classList.add('active');
+            document.getElementById(tabName).style.display = 'block';
+        }
+    </script>
+</body>
+</html>
