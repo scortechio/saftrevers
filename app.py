@@ -24,7 +24,7 @@ def index():
     return render_template('home2.html')
 @app.route('/review-tests')
 def index2():
-    return render_template('etva - Copy (2).html')
+    return render_template('table.html')
 @app.route('/audittests')
 def index3():
     return render_template('incarcare.html')

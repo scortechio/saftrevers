@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
+    <title>Interfață e-TVA</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <style>
+        :root {
+            --primary-500: #17406D;
+            --primary-700: #1a4a7d;
+            --white: #ffffff;
+            --gray-100: #f3f4f6;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: system-ui, -apple-system, sans-serif;
+            background-color: var(--primary-500);
+            color: var(--white);
+        }
+
+        /* Container Layout */
+        .container {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Logo Styling */
+        .menu-header {
+            display: flex;
+            align-items: center;     /* Center items vertically */
+            position: relative;      /* For absolute positioning of burger */
+            width: 100%;
+            margin-bottom: 2rem;
+            padding: 1rem 0;
+        }
+
+        .logo {
+            height: 50px;
+            width: auto;
+            margin: 0 auto;         /* Center logo */
+            display: block;
+        }
+
+        /* Burger menu on the left */
+        .burger-menu {
+            position: absolute;     /* Position relative to menu-header */
+            left: 0;               /* Align to left */
+            font-size: 1.5rem;
+            cursor: pointer;
+            background: none;
+            border: none;
+            color: var(--white);
+            padding: 0.5rem;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 300px;
+            background-color: var(--primary-700);
+            position: fixed;
+            left: 0;
+            top: 0;
+            height: 100vh;
+            padding: 2rem;
+            transition: transform 0.3s ease;
+            z-index: 1000;
+        }
+
+        .sidebar.collapsed {
+            transform: translateX(-100%);
+        }
+
+        .sidebar h2 {
+            margin-top: 3rem;
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            padding: 2rem;
+            margin-left: 350px;
+            transition: margin-left 0.3s ease;
+        }
+
+        .main-content.expanded {
+            margin-left: 0;
+        }
+
+        /* Center Content */
+        .center-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        /* Search and Export */
+        .search-wrapper {
+            width: 100%;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .search-input-container {
+            position: relative;
+            width: 100%;
+        }
+
+        .search-input-container input {
+            width: 100%;
+            padding: 0.75rem;
+            border: none;
+            border-radius: 0.5rem;
+            background-color: var(--gray-100);
+        }
+
+        .export-section {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            margin: 1rem 0;
+        }
+
+        .export-btn {
+            padding: 0.75rem 1.5rem;
+            background-color: var(--primary-700);
+            color: var(--white);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 0.375rem;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        /* Table Styling */
+        .table-responsive {
+            overflow-x: auto;
+            margin-top: 1rem;
+            width: 100%;
+        }
+
+        .styled-table {
+            width: 100%;
+            border-collapse: collapse;
+            background-color: var(--primary-700);
+            border: 2px solid white;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .styled-table thead {
+            background: linear-gradient(135deg, rgba(0, 160, 255, 0.7), rgba(0, 123, 182, 0.7));
+        }
+
+        .styled-table th,
+        .styled-table td {
+            padding: 1rem;
+            text-align: left;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .styled-table td:first-child {
+            font-weight: bold;
+            color: #ffffff;
+            background-color: #007acc;
+            border: 1px solid #005f99;
+            text-align: center;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Tab Content */
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        /* Menu Buttons */
+        .menu-button {
+            width: 100%;
+            padding: 0.75rem;
+            margin: 0.5rem 0;
+            background-color: transparent;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 0.375rem;
+            color: var(--white);
+            cursor: pointer;
+            transition: all 0.3s;
+            text-align: left;
+        }
+
+        .menu-button:hover,
+        .menu-button.active {
+            background-color: rgba(255, 255, 255, 0.1);
+            border-color: var(--white);
+        }
+    </style>
+</head>
+<body>
+    <button class="burger-menu" onclick="toggleSidebar()">
+        <i class="fas fa-bars"></i>
+    </button>
+
+    <div class="container">
+        <div class="sidebar" id="sidebar">
+            <div class="menu-header">
+                <button class="burger-menu" onclick="toggleSidebar()">
+                    <i class="fas fa-bars"></i>
+                </button>
+                <img src="logo-white.svg" alt="Logo" class="logo">
+            </div>
+            
+            <h2>Navigare</h2>
+            <button class="menu-button active" onclick="openTab(event, 'tab1')">
+                  E-Factura + AMEF
+            </button>
+            <button class="menu-button active" onclick="openTab(event, 'tab3')">
+                  E-Transport
+            </button>
+            <button class="menu-button active" onclick="openTab(event, 'tab4')">
+                 VAMA
+            </button>
+            <button class="menu-button active" onclick="openTab(event, 'tab5')">
+                  D300 vs E-FACT/E-Transport/VAMA
+            </button>
+            <button class="menu-button" onclick="openTab(event, 'tab2')">
+                 Declaratii
+            </button>
+        </div>
+
+        <div class="main-content" id="mainContent">
+            <div class="center-content">
+                <h1>e-TVA</h1>
+                
+                <div class="search-wrapper">
+                    <div class="search-input-container">
+                        <input type="text" placeholder="Căutare în tabel...">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tab 1 Content -->
+            <div id="tab1" class="tab-content active">
+                <!-- First table structure -->
+                <div class="export-section">
+                    <button class="export-btn">
+                        <i class="fas fa-file-csv"></i> Export CSV
+                    </button>
+                    <button class="export-btn">
+                        <i class="fas fa-file-excel"></i> Export Excel
+                    </button>
+                </div>
+                
+                <div class="table-responsive">
+                    <table class="styled-table">
+                        <thead>
+                            <tr>
+                                <th>Rand</th>
+                                <th>D300</th>
+                                <th>Efactura</th>
+                                <th>REGAC</th>
+                                <th>AMEF</th>
+                                <th>ETRANS</th>
+                                <th>VAMA</th>
+                                <th>EFCT</th>
+                                <th>REGAC</th>
+                                <th>AMEF</th>
+                                <th>ETRANS</th>
+                                <th>VAMA IMPORT</th>
+                                <th>VAMA EXPORT</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- First table rows -->
+                            <!-- Copy your existing rows here -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Tab 2 Content -->
+            <div id="tab2" class="tab-content">
+                <div class="export-section">
+                    <button class="export-btn">
+                        <i class="fas fa-file-excel"></i>Salvare date in Excel
+                    </button>
+                </div>
+                
+                <div class="table-responsive">
+                    <table class="styled-table">
+                        <thead>
+                            <tr>
+                                <th>Rand</th>
+                                <th>D300</th>
+                                <th>D390</th>
+                                <th>D394</th>
+                                <th>D300</th>
+                                <th>D390</th>
+                                <th>D394</th>
+                                <th></th>
+                                <th></th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Second table rows -->
+                            <!-- Copy your existing rows here -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            const mainContent = document.getElementById('mainContent');
+            sidebar.classList.toggle('collapsed');
+            mainContent.classList.toggle('expanded');
+        }
+
+        function openTab(event, tabName) {
+            const tabContents = document.getElementsByClassName('tab-content');
+            const menuButtons = document.getElementsByClassName('menu-button');
+
+            // Hide all tab contents
+            for (let content of tabContents) {
+                content.classList.remove('active');
+            }
+
+            // Remove active class from all menu buttons
+            for (let button of menuButtons) {
+                button.classList.remove('active');
+            }
+
+            // Show the selected tab content
+            document.getElementById(tabName).classList.add('active');
+            
+            // Add active class to the clicked button
+            event.currentTarget.classList.add('active');
+        }
+    </script>
+</body>
+</html>
